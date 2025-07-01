@@ -1,0 +1,210 @@
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { CalendarIcon, FileText, UserIcon } from 'lucide-react-native';
+import React, { useEffect, useState } from 'react';
+import { ActivityIndicator, Button, Image, Linking, ScrollView, Text, View } from 'react-native';
+// import { getStatusIcon, getPriorityIcon, formatDate } from '@/utils/taskUtils';
+import TaskUpdateCard from '@/components/TaskUpdateCard';
+import { Task, TaskUpdate } from '@/types/task.types';
+import { BASE_URL } from '@/utils/constants';
+import { FontAwesome5, Ionicons, MaterialIcons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+
+const TaskProgress = () => {
+    // const { taskId } = useLocalSearchParams<{ taskId: string }>();
+    const { taskId } = useLocalSearchParams<{ taskId: string }>();
+
+    console.log('taskId from route:', taskId);
+    const router = useRouter();
+    const [task, setTask] = useState<Task | null>(null);
+    const [updates, setUpdates] = useState<TaskUpdate[]>([]);
+    const [loading, setLoading] = useState(true);
+
+
+    const getPriorityIcon = (priority: string) => {
+        switch (priority) {
+            case 'High':
+                return <FontAwesome5 name="fire" size={20} color="red" />;
+            case 'Medium':
+                return <FontAwesome5 name="fire" size={20} color="orange" />;
+            case 'Low':
+                return <FontAwesome5 name="fire" size={20} color="blue" />;
+            default:
+                return null;
+        }
+    };
+
+    const getStatusIcon = (status: string) => {
+        switch (status) {
+            case 'Pending':
+                return <Ionicons name="time-outline" size={20} color="gray" />;
+            case 'In Progress':
+                return <Ionicons name="time-outline" size={20} color="blue" />;
+            case 'Completed':
+                return <MaterialIcons name="check-circle" size={20} color="green" />;
+            default:
+                return null;
+        }
+    };
+
+    // const formatDate = (ddateStr: string | null): string => {
+    //     if (!dateStr) return 'N/A';
+    //     return format(new Date(dateStr), 'MMM d, yyyy'); // e.g., "Jul 1, 2025"
+    // };
+    const formatDate = (dateStr: string | null): string => {
+        if (!dateStr) return 'N/A';
+        return new Date(dateStr).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+        });
+    };
+
+    // useEffect(() => {
+    //     const fetchTaskProgress = async () => {
+    //         try {
+    //             const token = await AsyncStorage.getItem('token');
+    //             const response = await axios.get(`${BASE_URL}/api/tasks/${taskId}/progress`, {
+    //                 headers: { Authorization: `Bearer ${token}` },
+    //             });
+    //             setTask(response.data.task);
+    //             setUpdates(response.data.updates || []);
+    //         } catch (error) {
+    //             console.error('Error fetching task progress:', error);
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     };
+
+    //     if (taskId) {
+    //         fetchTaskProgress();
+    //     }
+    // }, [taskId]);
+
+    useEffect(() => {
+        const fetchTaskProgress = async () => {
+            try {
+                console.log('Fetching progress for task:', taskId); // ✅ Add here
+
+                const token = await AsyncStorage.getItem('token');
+                //console.log('Token:', token); // ✅ Add here
+
+                const response = await axios.get(`${BASE_URL}/api/tasks/${taskId}/progress`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+
+                //console.log('Task response:', response.data); // ✅ Log full response
+
+                setTask(response.data.task);
+                setUpdates(response.data.updates || []);
+            } catch (error: any) {
+                console.error('Error fetching task progress:', error?.response?.data || error?.message); // ✅ Add here
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (taskId) {
+            fetchTaskProgress();
+        } else {
+            console.warn('No taskId found from route params!'); // ✅ Additional guard
+        }
+    }, [taskId]);
+
+
+    if (loading) {
+        return (
+            <View className="flex-1 justify-center items-center bg-white">
+                <ActivityIndicator size="large" color="orange" />
+            </View>
+        );
+    }
+
+    return (
+        <ScrollView className="flex-1 bg-yellow-50 p-4">
+            <Button title="← Back" color="black" onPress={() => router.back()} />
+
+            <Text className="text-center text-2xl font-bold text-black mt-4 mb-6">Task Progress</Text>
+
+            {task && (
+                <View className="mb-6 border-l-4 border-yellow-500 pl-4">
+                    <View className="bg-white border border-blue-500 rounded-lg shadow-md mb-4">
+                        <View className="bg-yellow-400 p-4 rounded-t-lg border-b border-yellow-500">
+                            <Text className="text-xl font-bold text-black">{task.title}</Text>
+                        </View>
+
+                        <View className="p-4 space-y-2">
+                            <Text className="text-black">{task.description || 'No description'}</Text>
+
+                            <View className="flex-row items-center space-x-2">
+                                <UserIcon size={16} color="#3b82f6" />
+                                <Text>Created By: {task.created_by}</Text>
+                            </View>
+                            <View className="flex-row items-center space-x-2">
+                                <UserIcon size={16} color="#3b82f6" />
+                                <Text>Assigned To: {task.assigned_to}</Text>
+                            </View>
+                            <View className="flex-row items-center space-x-2">
+                                {getStatusIcon(task.status)}
+                                <Text>Status: {task.status}</Text>
+                            </View>
+                            <View className="flex-row items-center space-x-2">
+                                {getPriorityIcon(task.priority)}
+                                <Text>Priority: {task.priority}</Text>
+                            </View>
+                            <View className="flex-row items-center space-x-2">
+                                <CalendarIcon size={16} color="#3b82f6" />
+                                <Text>Due: {formatDate(task.due_date)}</Text>
+                            </View>
+                            <View className="flex-row items-center space-x-2">
+                                <CalendarIcon size={16} color="#3b82f6" />
+                                <Text>Created: {formatDate(task.created_at)}</Text>
+                            </View>
+
+                            {task.audio_path && (
+                                <View className="mt-2">
+                                    <Text className="text-black font-medium mb-1">Audio Note:</Text>
+                                    <Text className="text-blue-500" onPress={() => Linking.openURL(`${BASE_URL}/${task.audio_path}`)}>Play Audio</Text>
+                                </View>
+                            )}
+
+                            {task.file_path && (
+                                <View className="mt-2">
+                                    <Text className="text-black font-medium mb-1">Attached File:</Text>
+                                    {task.file_path.match(/\.(jpg|jpeg|png)$/i) ? (
+                                        <Image source={{ uri: `${BASE_URL}/${task.file_path}` }} className="w-full h-40 rounded-md" />
+                                    ) : (
+                                        <Text className="text-yellow-600" onPress={() => Linking.openURL(`${BASE_URL}/${task.file_path}`)}>
+                                            Download {task.file_path.split('/').pop()}
+                                        </Text>
+                                    )}
+                                </View>
+                            )}
+                        </View>
+                    </View>
+                </View>
+            )}
+
+            {updates.length > 0 ? (
+                [...updates]
+                    .filter((u) => !u.is_system_generated)
+                    .reverse()
+                    .map((update, index) => (
+                        <TaskUpdateCard
+                            key={index}
+                            update={update}
+                            assigned_to={task?.assigned_to || ''}
+                        />
+                    ))
+            ) : (
+                <View className="items-center mt-6">
+                    {/* <FileText  size={48} color="#eab308" /> */}
+                    <FileText size={48} color="#facc15" className="mb-2" />
+                    <Text className="text-black mt-2">No updates yet for this task.</Text>
+                </View>
+            )}
+        </ScrollView>
+    );
+};
+
+export default TaskProgress;

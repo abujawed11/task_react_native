@@ -207,12 +207,12 @@ export default function Dashboard() {
               Role: <Text className="font-semibold">{user?.role}</Text> | Account Type: <Text className="font-semibold">{user?.accountType}</Text>
             </Text>
           </View>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={handleLogout}
             className="bg-black px-3 py-2 rounded-lg"
           >
             <Text className="text-yellow-400 font-bold">Logout</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
 
         {/* Cards */}

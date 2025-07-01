@@ -368,10 +368,94 @@
 // });
 
 // app/(dashboard)/index.tsx
-import { Redirect } from 'expo-router';
+// import { Redirect } from 'expo-router';
 
-export default function DashboardRedirect() {
-  return <Redirect href="/(dashboard)/tabs" />;
+// export default function DashboardRedirect() {
+//   return <Redirect href="/(dashboard)/tabs" />;
+// }
+
+// app/(dashboard)/index.tsx
+// import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+// import AssignTaskScreen from './assigned-tasks';
+// import Dashboard from './dashboard';
+// import MyTaskScreen from './my-tasks';
+
+// const Tab = createMaterialTopTabNavigator();
+
+// export default function DashboardTabs() {
+//     return (
+//         <Tab.Navigator
+//             screenOptions={{
+//                 tabBarLabelStyle: { fontSize: 14, fontWeight: 'bold' },
+//                 tabBarIndicatorStyle: { backgroundColor: 'orange' },
+//                 tabBarActiveTintColor: 'orange',
+//                 tabBarInactiveTintColor: 'gray',
+//             }}
+//         >
+//             <Tab.Screen name="Dashboard" component={Dashboard} />
+//             {/* <Tab.Screen name="Home" component={DashboardHome} /> */}
+//             <Tab.Screen name="My Task" component={MyTaskScreen} />
+//             <Tab.Screen name="Assign Task" component={AssignTaskScreen} />
+//         </Tab.Navigator>
+//     );
+// }
+
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { useNavigation } from '@react-navigation/native';
+import { useLayoutEffect } from 'react';
+import AssignTaskScreen from './assigned-tasks';
+import Dashboard from './dashboard';
+import MyTaskScreen from './my-tasks';
+
+const Tab = createMaterialTopTabNavigator();
+
+export default function DashboardTabs() {
+  const navigation = useNavigation();
+
+  // useLayoutEffect(() => {
+  //   const unsubscribe = navigation.addListener('state', (e: any) => {
+  //     const route = e.data.state.routes[e.data.state.index];
+  //     const tabName = route.name;
+
+  //     navigation.setOptions({
+  //       headerTitle: tabName,
+  //     });
+  //   });
+
+  //   return unsubscribe;
+  // }, [navigation]);
+    useLayoutEffect(() => {
+    const unsubscribe = navigation.addListener('state', (e: any) => {
+      const state = e.data?.state || e.target?.state;
+
+      if (!state) return;
+
+      const index = state.index;
+      const tabRoute = state.routes[index];
+      const title = tabRoute.name;
+
+      navigation.setOptions({ headerTitle: title });
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
+  return (
+    <Tab.Navigator
+      screenOptions={{
+        tabBarLabelStyle: { fontSize: 14, fontWeight: 'bold' },
+        tabBarIndicatorStyle: { backgroundColor: 'orange' },
+        tabBarActiveTintColor: 'orange',
+        tabBarInactiveTintColor: 'gray',
+      }}
+    >
+      <Tab.Screen name="Dashboard" component={Dashboard} />
+      <Tab.Screen name="My Task" component={MyTaskScreen} />
+      <Tab.Screen name="Assign Task" component={AssignTaskScreen} />
+    </Tab.Navigator>
+  );
 }
+
+
 
 

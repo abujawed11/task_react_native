@@ -69,14 +69,70 @@
 //   return <Stack />;
 // }
 
-import { Stack } from 'expo-router';
+// import { Stack } from 'expo-router';
+
+// export default function DashboardLayout() {
+//   return (
+//     <Stack>
+//       <Stack.Screen name="index" options={{ headerShown: false }} />
+//     </Stack>
+//   );
+// }
+
+// import { Stack } from 'expo-router';
+
+// export default function DashboardLayout() {
+//   return (
+//     <Stack>
+//       <Stack.Screen name="index" options={{ headerShown: false }} />
+//       <Stack.Screen name="create-task" options={{ headerShown: false }} />
+//       <Stack.Screen name="assigned-tasks" options={{ title: 'Assigned Tasks' }} />
+//       <Stack.Screen name="my-tasks" options={{ title: 'My Tasks' }} />
+//       <Stack.Screen name="task-progress" options={{ title: 'Task Progress' }} />
+//     </Stack>
+//   );
+// }
+
+// app/(dashboard)/_layout.tsx
+import CustomDrawer from '@/components/CustomDrawer';
+import { useAuth } from '@/context/AuthContext';
+import { Redirect } from 'expo-router';
+import { Drawer } from 'expo-router/drawer';
+import { ActivityIndicator, View } from 'react-native';
 
 export default function DashboardLayout() {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <View className="flex-1 justify-center items-center bg-white">
+        <ActivityIndicator size="large" color="orange" />
+      </View>
+    );
+  }
+
+  if (!user) {
+    return <Redirect href="/(auth)/login" />;
+  }
+
   return (
-    <Stack>
-      <Stack.Screen name="tabs" options={{ headerShown: false }} />
-    </Stack>
+    <Drawer
+      drawerContent={(props) => <CustomDrawer {...props} />}
+      screenOptions={{
+        drawerPosition: 'left',
+        headerStyle: { backgroundColor: '#facc15' },
+        headerTintColor: 'black',
+      }}
+    >
+      <Drawer.Screen name="index" options={{ drawerLabel: 'Dashboard' }} />
+      
+      <Drawer.Screen name="assigned-tasks" options={{ drawerLabel: 'Assigned Tasks' }} />
+      <Drawer.Screen name="my-tasks" options={{ drawerLabel: 'My Tasks' }} />
+      <Drawer.Screen name="create-task" options={{ drawerItemStyle: { display: 'none' } }} />
+      <Drawer.Screen name="task-progress" options={{ drawerItemStyle: { display: 'none' } }} />
+    </Drawer>
   );
 }
+
 
 

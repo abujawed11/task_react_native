@@ -49,89 +49,8 @@ Join our community of developers creating universal apps.
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
 
-```
-task_react_native_live
-├─ app
-│  ├─ (auth)
-│  │  ├─ login.tsx
-│  │  ├─ signup.tsx
-│  │  └─ _layout.tsx
-│  ├─ (dashboard)
-│  │  ├─ assigned-tasks.tsx
-│  │  ├─ create-task.tsx
-│  │  ├─ index.tsx
-│  │  ├─ my-tasks.tsx
-│  │  ├─ task-progress.tsx
-│  │  └─ _layout.tsx
-│  ├─ index.tsx
-│  ├─ notifications.tsx
-│  ├─ profile.tsx
-│  └─ _layout.tsx
-├─ app.json
-├─ assets
-│  ├─ animations
-│  │  └─ mascot.json
-│  ├─ fonts
-│  │  └─ SpaceMono-Regular.ttf
-│  └─ images
-│     ├─ adaptive-icon.png
-│     ├─ favicon.png
-│     ├─ icon.png
-│     ├─ partial-react-logo.png
-│     ├─ react-logo.png
-│     ├─ react-logo@2x.png
-│     ├─ react-logo@3x.png
-│     └─ splash-icon.png
-├─ babel.config.js
-├─ components
-│  ├─ FloatingButton.tsx
-│  ├─ Graph.tsx
-│  ├─ NotificationBell.tsx
-│  ├─ TaskCard.tsx
-│  ├─ TaskFilterMenu.tsx
-│  ├─ TaskSortMenu.tsx
-│  ├─ TaskUpdateCard.tsx
-│  └─ UserAvatar.tsx
-├─ context
-│  ├─ AuthContext.tsx
-│  ├─ NotificationContext.tsx
-│  └─ ThemeContext.tsx
-├─ eslint.config.js
-├─ global.css
-├─ hooks
-│  ├─ useAuth.ts
-│  ├─ useFilteredSortedTasks.ts
-│  └─ useNotifications.ts
-├─ metro.config.js
-├─ nativewind-env.d.ts
-├─ navigation
-│  ├─ AppNavigator.tsx
-│  ├─ AuthNavigator.tsx
-│  ├─ DashboardTabsNavigator.tsx
-│  ├─ DrawerNavigator.tsx
-│  └─ navigationTypes.ts
-├─ package-lock.json
-├─ package.json
-├─ README.md
-├─ services
-│  ├─ authService.ts
-│  ├─ notificationService.ts
-│  └─ taskService.ts
-├─ tailwind.config.js
-├─ tsconfig.json
-├─ types
-│  ├─ index.d.ts
-│  ├─ notification.ts
-│  ├─ task.ts
-│  └─ user.ts
-└─ utils
-   ├─ constants.ts
-   ├─ downloadExcel.ts
-   └─ formatDate.ts
 
-```
-```
-task_react_native_live
+task_react_native
 ├─ app
 │  ├─ (auth)
 │  │  ├─ login.tsx
@@ -140,6 +59,7 @@ task_react_native_live
 │  ├─ (dashboard)
 │  │  ├─ assigned-tasks.tsx
 │  │  ├─ create-task.tsx
+│  │  ├─ dashboard.tsx
 │  │  ├─ index.tsx
 │  │  ├─ my-tasks.tsx
 │  │  ├─ task-progress.tsx
@@ -208,6 +128,90 @@ task_react_native_live
 │  ├─ task.ts
 │  ├─ task.types.ts
 │  ├─ user.ts
+│  └─ user.types.ts
+└─ utils
+   ├─ constants.ts
+   ├─ downloadExcel.ts
+   └─ formatDate.ts
+
+```
+```
+task_react_native
+├─ app
+│  ├─ (auth)
+│  │  ├─ login.tsx
+│  │  ├─ signup.tsx
+│  │  └─ _layout.tsx
+│  ├─ (dashboard)
+│  │  ├─ assigned-tasks.tsx
+│  │  ├─ create-task.tsx
+│  │  ├─ dashboard.tsx
+│  │  ├─ index.tsx
+│  │  ├─ my-tasks.tsx
+│  │  ├─ task-progress.tsx
+│  │  └─ _layout.tsx
+│  ├─ index.tsx
+│  ├─ notifications.tsx
+│  ├─ profile.tsx
+│  └─ _layout.tsx
+├─ app.json
+├─ assets
+│  ├─ animations
+│  │  └─ mascot.json
+│  ├─ fonts
+│  │  └─ SpaceMono-Regular.ttf
+│  └─ images
+│     ├─ adaptive-icon.png
+│     ├─ favicon.png
+│     ├─ icon.png
+│     ├─ partial-react-logo.png
+│     ├─ react-logo.png
+│     ├─ react-logo@2x.png
+│     ├─ react-logo@3x.png
+│     └─ splash-icon.png
+├─ babel.config.js
+├─ components
+│  ├─ CustomDrawer.tsx
+│  ├─ FloatingButton.tsx
+│  ├─ Graph.tsx
+│  ├─ NotificationBell.tsx
+│  ├─ TaskCard.tsx
+│  ├─ TaskFilterMenu.tsx
+│  ├─ TaskSortMenu.tsx
+│  ├─ TaskUpdateCard.tsx
+│  └─ UserAvatar.tsx
+├─ context
+│  ├─ AuthContext.tsx
+│  ├─ NotificationContext.tsx
+│  └─ ThemeContext.tsx
+├─ eslint.config.js
+├─ global.css
+├─ hooks
+│  ├─ useAuth.ts
+│  ├─ useFilteredSortedTasks.ts
+│  └─ useNotifications.ts
+├─ metro.config.js
+├─ nativewind-env.d.ts
+├─ navigation
+│  ├─ AppNavigator.tsx
+│  ├─ AuthNavigator.tsx
+│  ├─ DashboardTabsNavigator.tsx
+│  ├─ DrawerNavigator.tsx
+│  └─ navigationTypes.ts
+├─ package-lock.json
+├─ package.json
+├─ README.md
+├─ services
+│  ├─ authService.ts
+│  ├─ notificationService.ts
+│  └─ taskService.ts
+├─ tailwind.config.js
+├─ tsconfig.json
+├─ types
+│  ├─ index.d.ts
+│  ├─ index.ts
+│  ├─ notification.types.ts
+│  ├─ task.types.ts
 │  └─ user.types.ts
 └─ utils
    ├─ constants.ts

@@ -239,7 +239,568 @@
 // }
 
 
+// import { BASE_URL } from '@/utils/constants';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
+// import DateTimePicker from '@react-native-community/datetimepicker';
+// import { Picker } from '@react-native-picker/picker';
+// import axios from 'axios';
+// import * as Audio from 'expo-av';
+// import * as DocumentPicker from 'expo-document-picker';
+// import { useRouter } from 'expo-router';
+// import React, { useEffect, useState } from 'react';
+// import { Alert, Platform, ScrollView, Text, TextInput, TouchableOpacity } from 'react-native';
+
+// interface Props {
+//   baseUrl: string;
+//   user: { username: string };
+// }
+
+// const CreateTaskScreen: React.FC<Props> = ({ user }) => {
+//   const router = useRouter();
+//   const [title, setTitle] = useState('');
+//   const [description, setDescription] = useState('');
+//   const [priority, setPriority] = useState('');
+//   const [assignedTo, setAssignedTo] = useState('');
+//   const [dueDate, setDueDate] = useState<Date | null>(null);
+//   const [users, setUsers] = useState<string[]>([]);
+//   const [file, setFile] = useState<any>(null);
+//   const [audioUri, setAudioUri] = useState<string | null>(null);
+
+
+//   useEffect(() => {
+//     const fetchUsers = async () => {
+//       const token = await AsyncStorage.getItem('token');
+//       const res = await axios.get(`${BASE_URL}/api/tasks/list`, {
+//         headers: { Authorization: `Bearer ${token}` },
+//       });
+//       setUsers(res.data);
+//     };
+//     fetchUsers();
+//   }, []);
+
+//   const handleFilePick = async () => {
+//     const res = await DocumentPicker.getDocumentAsync({});
+//     if (res.assets && res.assets[0]) setFile(res.assets[0]);
+//   };
+
+//   const handleAudioRecord = async () => {
+//     const permission = await Audio.Audio.requestPermissionsAsync();
+//     if (!permission.granted) return Alert.alert('Mic permission required');
+//     // Audio recording logic would go here (native only or via expo-av custom UI)
+//     Alert.alert('Recording feature needs to be manually handled');
+//   };
+
+//   const handleSubmit = async () => {
+//     if (!title || !priority || !assignedTo || !dueDate) {
+//       Alert.alert('Please fill all required fields');
+//       return;
+//     }
+//     const token = await AsyncStorage.getItem('token');
+//     const formData = new FormData();
+//     formData.append('title', title);
+//     formData.append('description', description);
+//     formData.append('priority', priority);
+//     formData.append('assigned_to', assignedTo);
+//     formData.append('due_date', dueDate.toISOString().split('T')[0]);
+//     if (file) formData.append('file', file);
+//     if (audioUri) formData.append('audio', audioUri);
+
+//     await axios.post(`${BASE_URL}/api/tasks/create`, formData, {
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//         'Content-Type': 'multipart/form-data',
+//       },
+//     });
+//     Alert.alert('Task created successfully!');
+//     router.push('/(dashboard)');
+//   };
+
+//   return (
+//     <ScrollView className="bg-yellow-100 min-h-screen p-4">
+//       <Text className="text-2xl font-bold text-black mb-4">Create Task</Text>
+
+//       <TextInput
+//         placeholder="Title"
+//         value={title}
+//         onChangeText={setTitle}
+//         className="bg-white p-3 rounded-lg border border-gray-300 mb-4"
+//       />
+
+//       <TextInput
+//         placeholder="Description"
+//         value={description}
+//         onChangeText={setDescription}
+//         multiline
+//         numberOfLines={4}
+//         className="bg-white p-3 rounded-lg border border-gray-300 mb-4"
+//       />
+
+//       <Picker
+//         selectedValue={priority}
+//         onValueChange={(val) => setPriority(val)}
+//         className="bg-white border border-gray-300 rounded-lg mb-4"
+//       >
+//         <Picker.Item label="Select Priority" value="" />
+//         <Picker.Item label="Low" value="Low" />
+//         <Picker.Item label="Medium" value="Medium" />
+//         <Picker.Item label="High" value="High" />
+//       </Picker>
+
+//       <Picker
+//         selectedValue={assignedTo}
+//         onValueChange={(val) => setAssignedTo(val)}
+//         className="bg-white border border-gray-300 rounded-lg mb-4"
+//       >
+//         <Picker.Item label="Assign To" value="" />
+//         {users.map((u, idx) => (
+//           <Picker.Item key={idx} label={u} value={u} />
+//         ))}
+//       </Picker>
+
+//       {Platform.OS === 'android' || Platform.OS === 'ios' ? (
+//         <TouchableOpacity onPress={() => setDueDate(new Date())} className="bg-white p-3 rounded-lg border border-gray-300 mb-4">
+//           <Text>{dueDate ? dueDate.toDateString() : 'Select Due Date'}</Text>
+//         </TouchableOpacity>
+//       ) : (
+//         <DateTimePicker
+//           value={dueDate || new Date()}
+//           mode="date"
+//           display="default"
+//           onChange={(e, date) => setDueDate(date || null)}
+//         />
+//       )}
+
+//       <TouchableOpacity onPress={handleFilePick} className="bg-black p-3 rounded-lg mb-4">
+//         <Text className="text-yellow-400 font-bold text-center">Attach File</Text>
+//       </TouchableOpacity>
+//       {file && <Text className="text-black mb-2">Selected: {file.name}</Text>}
+
+//       <TouchableOpacity onPress={handleAudioRecord} className="bg-black p-3 rounded-lg mb-4">
+//         <Text className="text-yellow-400 font-bold text-center">Record Audio</Text>
+//       </TouchableOpacity>
+
+//       <TouchableOpacity onPress={handleSubmit} className="bg-yellow-500 p-3 rounded-lg">
+//         <Text className="text-black font-bold text-center">Create Task</Text>
+//       </TouchableOpacity>
+//     </ScrollView>
+//   );
+// };
+
+// export default CreateTaskScreen;
+
+
+// import { BASE_URL } from '@/utils/constants';
+// import { Ionicons } from '@expo/vector-icons';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
+// import DateTimePicker from '@react-native-community/datetimepicker';
+// import { Picker } from '@react-native-picker/picker';
+// import axios from 'axios';
+// import * as Audio from 'expo-av';
+// import * as DocumentPicker from 'expo-document-picker';
+// import { useRouter } from 'expo-router';
+// import React, { useEffect, useState } from 'react';
+// import { Alert, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+
+// interface Props {
+//   baseUrl: string;
+//   user: { username: string };
+// }
+
+// const CreateTaskScreen: React.FC<Props> = ({ user }) => {
+//   const router = useRouter();
+//   const [title, setTitle] = useState('');
+//   const [description, setDescription] = useState('');
+//   const [priority, setPriority] = useState('');
+//   const [assignedTo, setAssignedTo] = useState('');
+//   const [dueDate, setDueDate] = useState<Date | null>(null);
+//   const [showDatePicker, setShowDatePicker] = useState(false);
+//   const [users, setUsers] = useState<string[]>([]);
+//   const [file, setFile] = useState<any>(null);
+//   const [audioUri, setAudioUri] = useState<string | null>(null);
+
+//   useEffect(() => {
+//     const fetchUsers = async () => {
+//       const token = await AsyncStorage.getItem('token');
+//       const res = await axios.get(`${BASE_URL}/api/tasks/list`, {
+//         headers: { Authorization: `Bearer ${token}` },
+//       });
+//       setUsers(res.data);
+//     };
+//     fetchUsers();
+//   }, []);
+
+//   const handleFilePick = async () => {
+//     const res = await DocumentPicker.getDocumentAsync({});
+//     if (res.assets && res.assets[0]) setFile(res.assets[0]);
+//   };
+
+//   const handleAudioRecord = async () => {
+//     const permission = await Audio.Audio.requestPermissionsAsync();
+//     if (!permission.granted) return Alert.alert('Mic permission required');
+//     Alert.alert('Recording feature needs to be manually handled');
+//   };
+
+//   const handleSubmit = async () => {
+//     if (!title || !priority || !assignedTo || !dueDate) {
+//       Alert.alert('Please fill all required fields');
+//       return;
+//     }
+//     const token = await AsyncStorage.getItem('token');
+//     const formData = new FormData();
+//     formData.append('title', title);
+//     formData.append('description', description);
+//     formData.append('priority', priority);
+//     formData.append('assigned_to', assignedTo);
+//     formData.append('due_date', dueDate.toISOString().split('T')[0]);
+//     if (file) formData.append('file', file);
+//     if (audioUri) formData.append('audio', audioUri);
+
+//     await axios.post(`${BASE_URL}/api/tasks/create`, formData, {
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//         'Content-Type': 'multipart/form-data',
+//       },
+//     });
+//     Alert.alert('Task created successfully!');
+//     router.push('/(dashboard)');
+//   };
+
+//   return (
+//     <ScrollView className="bg-yellow-100 min-h-screen p-4">
+//       <View className="flex-1 w-full max-w-md mx-auto">
+//         <Text className="text-3xl font-bold text-black mb-6 text-center">Create Task</Text>
+
+//         <TextInput
+//           placeholder="Title"
+//           value={title}
+//           onChangeText={setTitle}
+//           className="bg-white p-4 rounded-xl border border-gray-300 mb-4 text-base"
+//         />
+
+//         <TextInput
+//           placeholder="Description"
+//           value={description}
+//           onChangeText={setDescription}
+//           multiline
+//           numberOfLines={6}
+//           className="bg-white p-4 rounded-xl border border-gray-300 mb-4 text-base h-32"
+//         />
+
+//         <View className="bg-white rounded-xl border border-gray-300 mb-4">
+//           <Picker
+//             selectedValue={priority}
+//             onValueChange={(val) => setPriority(val)}
+//             className="text-base"
+//           >
+//             <Picker.Item label="Select Priority" value="" />
+//             <Picker.Item label="Low" value="Low" />
+//             <Picker.Item label="Medium" value="Medium" />
+//             <Picker.Item label="High" value="High" />
+//           </Picker>
+//         </View>
+
+//         <View className="bg-white rounded-xl border border-gray-300 mb-4">
+//           <Picker
+//             selectedValue={assignedTo}
+//             onValueChange={(val) => setAssignedTo(val)}
+//             className="text-base"
+//           >
+//             <Picker.Item label="Assign To" value="" />
+//             {users.map((u, idx) => (
+//               <Picker.Item key={idx} label={u} value={u} />
+//             ))}
+//           </Picker>
+//         </View>
+
+//         <View className="relative mb-4">
+//           <TouchableOpacity
+//             onPress={() => setShowDatePicker(true)}
+//             className="flex-row items-center bg-white p-4 rounded-xl border border-gray-300"
+//             activeOpacity={0.8}
+//           >
+//             <Text className={`flex-1 text-base ${dueDate ? 'text-gray-700' : 'text-gray-400'}`}>
+//               {dueDate ? dueDate.toLocaleDateString() : 'dd-mm-yyyy'}
+//             </Text>
+//             <Ionicons name="calendar-outline" size={20} color="gray" />
+//           </TouchableOpacity>
+//         </View>
+
+//         {showDatePicker && (
+//           <DateTimePicker
+//             value={dueDate || new Date()}
+//             mode="date"
+//             display="default"
+//             onChange={(e, selectedDate) => {
+//               setShowDatePicker(false);
+//               if (selectedDate) setDueDate(selectedDate);
+//             }}
+//           />
+//         )}
+
+//         <TouchableOpacity
+//           onPress={handleFilePick}
+//           className="bg-black p-4 rounded-xl mb-4 active:opacity-80"
+//         >
+//           <Text className="text-yellow-400 font-bold text-center">Attach File</Text>
+//         </TouchableOpacity>
+//         {file && <Text className="text-black mb-2">Selected: {file.name}</Text>}
+
+//         <TouchableOpacity
+//           onPress={handleAudioRecord}
+//           className="bg-black p-4 rounded-xl mb-4 active:opacity-80"
+//         >
+//           <Text className="text-yellow-400 font-bold text-center">Record Audio</Text>
+//         </TouchableOpacity>
+
+//         <TouchableOpacity
+//           onPress={handleSubmit}
+//           className="bg-yellow-500 p-4 rounded-xl active:opacity-80"
+//         >
+//           <Text className="text-black font-bold text-center text-base">Create Task</Text>
+//         </TouchableOpacity>
+//       </View>
+//     </ScrollView>
+//   );
+// };
+
+// export default CreateTaskScreen;
+
+// import { BASE_URL } from '@/utils/constants';
+// import { Ionicons } from '@expo/vector-icons';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
+// import DateTimePicker from '@react-native-community/datetimepicker';
+// import { Picker } from '@react-native-picker/picker';
+// import axios from 'axios';
+// import * as Audio from 'expo-av';
+// import * as DocumentPicker from 'expo-document-picker';
+// import { useRouter } from 'expo-router';
+// import React, { useEffect, useState } from 'react';
+// import { Alert, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+
+// interface Props {
+//   baseUrl: string;
+//   user: { username: string };
+// }
+
+// const CreateTaskScreen: React.FC<Props> = ({ user }) => {
+//   const router = useRouter();
+//   const [title, setTitle] = useState('');
+//   const [description, setDescription] = useState('');
+//   const [priority, setPriority] = useState('');
+//   const [assignedTo, setAssignedTo] = useState('');
+//   const [dueDate, setDueDate] = useState<Date | null>(null);
+//   const [showDatePicker, setShowDatePicker] = useState(false);
+//   const [users, setUsers] = useState<string[]>([]);
+//   const [file, setFile] = useState<any>(null);
+//   const [audioUri, setAudioUri] = useState<string | null>(null);
+
+//   useEffect(() => {
+//     const fetchUsers = async () => {
+//       const token = await AsyncStorage.getItem('token');
+//       const res = await axios.get(`${BASE_URL}/api/tasks/list`, {
+//         headers: { Authorization: `Bearer ${token}` },
+//       });
+//       setUsers(res.data);
+//     };
+//     fetchUsers();
+//   }, []);
+
+//   const handleFilePick = async () => {
+//     const res = await DocumentPicker.getDocumentAsync({});
+//     if (res.assets && res.assets[0]) setFile(res.assets[0]);
+//   };
+
+//   const handleAudioRecord = async () => {
+//     const permission = await Audio.Audio.requestPermissionsAsync();
+//     if (!permission.granted) return Alert.alert('Mic permission required');
+//     Alert.alert('Recording feature needs to be manually handled');
+//   };
+
+//   // const handleSubmit = async () => {
+//   //   if (!title || !priority || !assignedTo || !dueDate) {
+//   //     Alert.alert('Please fill all required fields');
+//   //     return;
+//   //   }
+//   //   const token = await AsyncStorage.getItem('token');
+//   //   const formData = new FormData();
+//   //   formData.append('title', title);
+//   //   formData.append('description', description);
+//   //   formData.append('priority', priority);
+//   //   formData.append('assigned_to', assignedTo);
+//   //   formData.append('due_date', dueDate.toISOString().split('T')[0]);
+//   //   if (file) formData.append('file', file);
+//   //   if (audioUri) formData.append('audio', audioUri);
+
+//   //   await axios.post(`${BASE_URL}/api/tasks/create`, formData, {
+//   //     headers: {
+//   //       Authorization: `Bearer ${token}`,
+//   //       'Content-Type': 'multipart/form-data',
+//   //     },
+//   //   });
+//   //   Alert.alert('Task created successfully!');
+//   //   router.push('/(dashboard)');
+//   // };
+
+//   const handleSubmit = async () => {
+//     try {
+//       console.log('🔄 handleSubmit called');
+
+//       if (!title || !priority || !assignedTo || !dueDate) {
+//         console.warn('⚠️ Missing required fields:', { title, priority, assignedTo, dueDate });
+//         Alert.alert('Please fill all required fields');
+//         return;
+//       }
+
+//       const token = await AsyncStorage.getItem('token');
+//       console.log('🔐 Token:', token);
+
+//       const formData = new FormData();
+//       formData.append('title', title);
+//       formData.append('description', description);
+//       formData.append('priority', priority);
+//       formData.append('assigned_to', assignedTo);
+//       formData.append('due_date', dueDate.toISOString().split('T')[0]);
+
+//       if (file) {
+//         console.log('📎 Attaching file:', file);
+//         formData.append('file', {
+//           uri: file.uri,
+//           name: file.name || 'uploaded_file',
+//           type: file.type || 'application/octet-stream',
+//         } as any);
+//       }
+
+//       if (audioUri) {
+//         console.log('🎤 Attaching audio:', audioUri);
+//         formData.append('audio', {
+//           uri: audioUri,
+//           name: 'audio.m4a',
+//           type: 'audio/x-m4a',
+//         } as any);
+//       }
+
+//       console.log('📤 Sending POST request to:', `${BASE_URL}/api/tasks/create`);
+
+//       const response = await axios.post(`${BASE_URL}/api/tasks/create`, formData, {
+//         headers: {
+//           Authorization: `Bearer ${token}`,
+//           'Content-Type': 'multipart/form-data',
+//         },
+//       });
+
+//       console.log('✅ Task created successfully:', response.data);
+//       Alert.alert('Task created successfully!');
+//       router.push('/(dashboard)');
+//     } catch (error: any) {
+//       console.error('❌ Error creating task:', error);
+//       Alert.alert('Failed to create task', error?.response?.data?.message || error.message);
+//     }
+//   };
+
+
+//   return (
+//     <ScrollView className="bg-yellow-100 min-h-screen p-4">
+//       <View className="flex-1 w-full max-w-md mx-auto">
+//         <Text className="text-3xl font-bold text-black mb-6 text-center">Create Task</Text>
+
+//         <TextInput
+//           placeholder="Title"
+//           value={title}
+//           onChangeText={setTitle}
+//           className="bg-white p-4 rounded-xl border border-gray-300 mb-4 text-base"
+//         />
+
+//         <TextInput
+//           placeholder="Description"
+//           value={description}
+//           onChangeText={setDescription}
+//           multiline
+//           numberOfLines={6}
+//           className="bg-white p-4 rounded-xl border border-gray-300 mb-4 text-base h-32"
+//         />
+
+//         <View className="bg-white rounded-xl border border-gray-300 mb-4">
+//           <Picker
+//             selectedValue={priority}
+//             onValueChange={(val) => setPriority(val)}
+//             className="text-base"
+//           >
+//             <Picker.Item label="Select Priority" value="" />
+//             <Picker.Item label="Low" value="Low" />
+//             <Picker.Item label="Medium" value="Medium" />
+//             <Picker.Item label="High" value="High" />
+//           </Picker>
+//         </View>
+
+//         <View className="bg-white rounded-xl border border-gray-300 mb-4">
+//           <Picker
+//             selectedValue={assignedTo}
+//             onValueChange={(val) => setAssignedTo(val)}
+//             className="text-base"
+//           >
+//             <Picker.Item label="Assign To" value="" />
+//             {users.map((u, idx) => (
+//               <Picker.Item key={idx} label={u} value={u} />
+//             ))}
+//           </Picker>
+//         </View>
+
+//         <View className="relative mb-4">
+//           <TouchableOpacity
+//             onPress={() => setShowDatePicker(true)}
+//             className="flex-row items-center bg-white p-4 rounded-xl border border-gray-300"
+//             activeOpacity={0.8}
+//           >
+//             <Text className={`flex-1 text-base ${dueDate ? 'text-gray-700' : 'text-gray-400'}`}>
+//               {dueDate ? dueDate.toLocaleDateString() : 'dd-mm-yyyy'}
+//             </Text>
+//             <Ionicons name="calendar-outline" size={20} color="gray" />
+//           </TouchableOpacity>
+//         </View>
+
+//         {showDatePicker && (
+//           <DateTimePicker
+//             value={dueDate || new Date()}
+//             mode="date"
+//             display="default"
+//             onChange={(e, selectedDate) => {
+//               setShowDatePicker(false);
+//               if (selectedDate) setDueDate(selectedDate);
+//             }}
+//           />
+//         )}
+
+//         <TouchableOpacity
+//           onPress={handleFilePick}
+//           className="bg-black p-4 rounded-xl mb-4 active:opacity-80"
+//         >
+//           <Text className="text-yellow-400 font-bold text-center">Attach File</Text>
+//         </TouchableOpacity>
+//         {file && <Text className="text-black mb-2">Selected: {file.name}</Text>}
+
+//         <TouchableOpacity
+//           onPress={handleAudioRecord}
+//           className="bg-black p-4 rounded-xl mb-4 active:opacity-80"
+//         >
+//           <Text className="text-yellow-400 font-bold text-center">Record Audio</Text>
+//         </TouchableOpacity>
+
+//         <TouchableOpacity
+//           onPress={handleSubmit}
+//           className="bg-yellow-500 p-4 rounded-xl active:opacity-80"
+//         >
+//           <Text className="text-black font-bold text-center text-base">Create Task</Text>
+//         </TouchableOpacity>
+//       </View>
+//     </ScrollView>
+//   );
+// };
+
+// export default CreateTaskScreen;
+
+
 import { BASE_URL } from '@/utils/constants';
+import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
@@ -248,7 +809,7 @@ import * as Audio from 'expo-av';
 import * as DocumentPicker from 'expo-document-picker';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { Alert, Platform, ScrollView, Text, TextInput, TouchableOpacity } from 'react-native';
+import { Alert, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 interface Props {
   baseUrl: string;
@@ -262,10 +823,10 @@ const CreateTaskScreen: React.FC<Props> = ({ user }) => {
   const [priority, setPriority] = useState('');
   const [assignedTo, setAssignedTo] = useState('');
   const [dueDate, setDueDate] = useState<Date | null>(null);
+  const [showDatePicker, setShowDatePicker] = useState(false);
   const [users, setUsers] = useState<string[]>([]);
   const [file, setFile] = useState<any>(null);
   const [audioUri, setAudioUri] = useState<string | null>(null);
-  
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -280,13 +841,19 @@ const CreateTaskScreen: React.FC<Props> = ({ user }) => {
 
   const handleFilePick = async () => {
     const res = await DocumentPicker.getDocumentAsync({});
-    if (res.assets && res.assets[0]) setFile(res.assets[0]);
+    if (res.assets && res.assets[0]) {
+      const picked = res.assets[0];
+      setFile({
+        uri: picked.uri,
+        name: picked.name,
+        type: picked.mimeType || 'application/octet-stream',
+      });
+    }
   };
 
   const handleAudioRecord = async () => {
     const permission = await Audio.Audio.requestPermissionsAsync();
     if (!permission.granted) return Alert.alert('Mic permission required');
-    // Audio recording logic would go here (native only or via expo-av custom UI)
     Alert.alert('Recording feature needs to be manually handled');
   };
 
@@ -295,96 +862,144 @@ const CreateTaskScreen: React.FC<Props> = ({ user }) => {
       Alert.alert('Please fill all required fields');
       return;
     }
+
     const token = await AsyncStorage.getItem('token');
     const formData = new FormData();
+
+    // Append task data
     formData.append('title', title);
     formData.append('description', description);
     formData.append('priority', priority);
     formData.append('assigned_to', assignedTo);
     formData.append('due_date', dueDate.toISOString().split('T')[0]);
-    if (file) formData.append('file', file);
-    if (audioUri) formData.append('audio', audioUri);
 
-    await axios.post(`${BASE_URL}/api/tasks/create`, formData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-    Alert.alert('Task created successfully!');
-    router.push('/(dashboard)');
+    // If file is selected, append the file
+    if (file) {
+      formData.append('file', {
+        uri: file.uri,
+        name: file.name,
+        type: file.type || 'application/octet-stream',
+      } as any); // Cast to `any` for TypeScript compatibility
+    }
+
+    // If audio URI is set, append the audio file
+    if (audioUri) {
+      formData.append('audio', audioUri);
+    }
+
+    try {
+      // Send POST request to create task
+      await axios.post(`${BASE_URL}/api/tasks/create`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      // Show success alert and navigate back
+      Alert.alert('Task created successfully!');
+      router.push('/(dashboard)');
+    } catch (error) {
+      Alert.alert('Error creating task. Please try again.');
+    }
   };
 
   return (
     <ScrollView className="bg-yellow-100 min-h-screen p-4">
-      <Text className="text-2xl font-bold text-black mb-4">Create Task</Text>
+      <View className="flex-1 w-full max-w-md mx-auto">
+        <Text className="text-3xl font-bold text-black mb-6 text-center">Create Task</Text>
 
-      <TextInput
-        placeholder="Title"
-        value={title}
-        onChangeText={setTitle}
-        className="bg-white p-3 rounded-lg border border-gray-300 mb-4"
-      />
-
-      <TextInput
-        placeholder="Description"
-        value={description}
-        onChangeText={setDescription}
-        multiline
-        numberOfLines={4}
-        className="bg-white p-3 rounded-lg border border-gray-300 mb-4"
-      />
-
-      <Picker
-        selectedValue={priority}
-        onValueChange={(val) => setPriority(val)}
-        className="bg-white border border-gray-300 rounded-lg mb-4"
-      >
-        <Picker.Item label="Select Priority" value="" />
-        <Picker.Item label="Low" value="Low" />
-        <Picker.Item label="Medium" value="Medium" />
-        <Picker.Item label="High" value="High" />
-      </Picker>
-
-      <Picker
-        selectedValue={assignedTo}
-        onValueChange={(val) => setAssignedTo(val)}
-        className="bg-white border border-gray-300 rounded-lg mb-4"
-      >
-        <Picker.Item label="Assign To" value="" />
-        {users.map((u, idx) => (
-          <Picker.Item key={idx} label={u} value={u} />
-        ))}
-      </Picker>
-
-      {Platform.OS === 'android' || Platform.OS === 'ios' ? (
-        <TouchableOpacity onPress={() => setDueDate(new Date())} className="bg-white p-3 rounded-lg border border-gray-300 mb-4">
-          <Text>{dueDate ? dueDate.toDateString() : 'Select Due Date'}</Text>
-        </TouchableOpacity>
-      ) : (
-        <DateTimePicker
-          value={dueDate || new Date()}
-          mode="date"
-          display="default"
-          onChange={(e, date) => setDueDate(date || null)}
+        <TextInput
+          placeholder="Title"
+          value={title}
+          onChangeText={setTitle}
+          className="bg-white p-4 rounded-xl border border-gray-300 mb-4 text-base"
         />
-      )}
 
-      <TouchableOpacity onPress={handleFilePick} className="bg-black p-3 rounded-lg mb-4">
-        <Text className="text-yellow-400 font-bold text-center">Attach File</Text>
-      </TouchableOpacity>
-      {file && <Text className="text-black mb-2">Selected: {file.name}</Text>}
+        <TextInput
+          placeholder="Description"
+          value={description}
+          onChangeText={setDescription}
+          multiline
+          numberOfLines={6}
+          className="bg-white p-4 rounded-xl border border-gray-300 mb-4 text-base h-32"
+        />
 
-      <TouchableOpacity onPress={handleAudioRecord} className="bg-black p-3 rounded-lg mb-4">
-        <Text className="text-yellow-400 font-bold text-center">Record Audio</Text>
-      </TouchableOpacity>
+        <View className="bg-white rounded-xl border border-gray-300 mb-4">
+          <Picker
+            selectedValue={priority}
+            onValueChange={(val) => setPriority(val)}
+            className="text-base"
+          >
+            <Picker.Item label="Select Priority" value="" />
+            <Picker.Item label="Low" value="Low" />
+            <Picker.Item label="Medium" value="Medium" />
+            <Picker.Item label="High" value="High" />
+          </Picker>
+        </View>
 
-      <TouchableOpacity onPress={handleSubmit} className="bg-yellow-500 p-3 rounded-lg">
-        <Text className="text-black font-bold text-center">Create Task</Text>
-      </TouchableOpacity>
+        <View className="bg-white rounded-xl border border-gray-300 mb-4">
+          <Picker
+            selectedValue={assignedTo}
+            onValueChange={(val) => setAssignedTo(val)}
+            className="text-base"
+          >
+            <Picker.Item label="Assign To" value="" />
+            {users.map((u, idx) => (
+              <Picker.Item key={idx} label={u} value={u} />
+            ))}
+          </Picker>
+        </View>
+
+        <View className="relative mb-4">
+          <TouchableOpacity
+            onPress={() => setShowDatePicker(true)}
+            className="flex-row items-center bg-white p-4 rounded-xl border border-gray-300"
+            activeOpacity={0.8}
+          >
+            <Text className={`flex-1 text-base ${dueDate ? 'text-gray-700' : 'text-gray-400'}`}>
+              {dueDate ? dueDate.toLocaleDateString() : 'dd-mm-yyyy'}
+            </Text>
+            <Ionicons name="calendar-outline" size={20} color="gray" />
+          </TouchableOpacity>
+        </View>
+
+        {showDatePicker && (
+          <DateTimePicker
+            value={dueDate || new Date()}
+            mode="date"
+            display="default"
+            onChange={(e, selectedDate) => {
+              setShowDatePicker(false);
+              if (selectedDate) setDueDate(selectedDate);
+            }}
+          />
+        )}
+
+        <TouchableOpacity
+          onPress={handleFilePick}
+          className="bg-black p-4 rounded-xl mb-4 active:opacity-80"
+        >
+          <Text className="text-yellow-400 font-bold text-center">Attach File</Text>
+        </TouchableOpacity>
+        {file && <Text className="text-black mb-2">Selected: {file.name}</Text>}
+
+        <TouchableOpacity
+          onPress={handleAudioRecord}
+          className="bg-black p-4 rounded-xl mb-4 active:opacity-80"
+        >
+          <Text className="text-yellow-400 font-bold text-center">Record Audio</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={handleSubmit}
+          className="bg-yellow-500 p-4 rounded-xl active:opacity-80"
+        >
+          <Text className="text-black font-bold text-center text-base">Create Task</Text>
+        </TouchableOpacity>
+      </View>
     </ScrollView>
   );
 };
 
 export default CreateTaskScreen;
-
