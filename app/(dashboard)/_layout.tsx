@@ -36,29 +36,47 @@
 // }
 
 // app/(dashboard)/_layout.tsx
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import AssignTaskScreen from './assigned-tasks';
-import DashboardHome from './index';
-import MyTaskScreen from './my-tasks';
+// import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+// import AssignTaskScreen from './assigned-tasks';
+// import DashboardHome from './index';
+// import MyTaskScreen from './my-tasks';
 
-const Tab = createMaterialTopTabNavigator();
+// const Tab = createMaterialTopTabNavigator();
+
+// export default function DashboardLayout() {
+//   return (
+//     // <NavigationContainer>
+//       <Tab.Navigator
+//         screenOptions={{
+//           tabBarLabelStyle: { fontSize: 14, fontWeight: 'bold' },
+//           tabBarIndicatorStyle: { backgroundColor: 'orange' },
+//           tabBarActiveTintColor: 'orange',
+//           tabBarInactiveTintColor: 'gray',
+//         }}
+//       >
+//         <Tab.Screen name="Home" component={DashboardHome} />
+//         <Tab.Screen name="My Task" component={MyTaskScreen} />
+//         <Tab.Screen name="Assign Task" component={AssignTaskScreen} />
+//       </Tab.Navigator>
+//     // </NavigationContainer>
+//   );
+// }
+
+// app/(dashboard)/_layout.tsx
+// import { Stack } from 'expo-router';
+
+// export default function DashboardLayout() {
+//   return <Stack />;
+// }
+
+import { Stack } from 'expo-router';
 
 export default function DashboardLayout() {
   return (
-    // <NavigationContainer>
-      <Tab.Navigator
-        screenOptions={{
-          tabBarLabelStyle: { fontSize: 14, fontWeight: 'bold' },
-          tabBarIndicatorStyle: { backgroundColor: 'orange' },
-          tabBarActiveTintColor: 'orange',
-          tabBarInactiveTintColor: 'gray',
-        }}
-      >
-        <Tab.Screen name="Home" component={DashboardHome} />
-        <Tab.Screen name="My Task" component={MyTaskScreen} />
-        <Tab.Screen name="Assign Task" component={AssignTaskScreen} />
-      </Tab.Navigator>
-    // </NavigationContainer>
+    <Stack>
+      <Stack.Screen name="tabs" options={{ headerShown: false }} />
+    </Stack>
   );
 }
+
 
