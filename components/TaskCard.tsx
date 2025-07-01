@@ -413,8 +413,8 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, location, expanded, toggleDes
           <TouchableOpacity
             onPress={() =>
               router.push({
-                pathname: '/(dashboard)/create-task',
-                params: { task_id: task.task_id, from: location },
+                pathname: '/tasks/[taskId]/update',
+                params: { taskId: task.task_id, from: location },
               })
             }
             className="bg-yellow-500 px-2 py-1 rounded ml-3"
