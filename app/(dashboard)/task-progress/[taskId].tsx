@@ -1,7 +1,7 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { CalendarIcon, FileText, UserIcon } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Button, Image, Linking, ScrollView, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, Button, Image, Linking, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 // import { getStatusIcon, getPriorityIcon, formatDate } from '@/utils/taskUtils';
 import TaskUpdateCard from '@/components/TaskUpdateCard';
 import { Task, TaskUpdate } from '@/types/task.types';
@@ -80,6 +80,15 @@ const TaskProgress = () => {
     //         fetchTaskProgress();
     //     }
     // }, [taskId]);
+
+    const openLink = async (url: string) => {
+        const supported = await Linking.canOpenURL(url);
+        if (supported) {
+            await Linking.openURL(url);
+        } else {
+            Alert.alert("Can't open this file", url);
+        }
+    };
 
     useEffect(() => {
         const fetchTaskProgress = async () => {
@@ -169,10 +178,30 @@ const TaskProgress = () => {
                             )}
 
                             {task.file_path && (
+
+
                                 <View className="mt-2">
                                     <Text className="text-black font-medium mb-1">Attached File:</Text>
                                     {task.file_path.match(/\.(jpg|jpeg|png)$/i) ? (
-                                        <Image source={{ uri: `${BASE_URL}/${task.file_path}` }} className="w-full h-40 rounded-md" />
+
+                                        // <Image source={{ uri: `${BASE_URL}/${task.file_path}` }} className="w-full h-40 rounded-md" />
+                                        <TouchableOpacity
+                                            onPress={() => {
+                                                // console.log('Pressed image:', `${BASE_URL}/${update.file_path}`);
+                                                openLink(`${BASE_URL}/${task.file_path}`);
+                                            }}
+                                            activeOpacity={0.7}
+                                            style={{ width: '100%', height: 160, backgroundColor: 'rgba(255,255,0,0.1)' }} // Add background for debug
+                                        >
+                                            <Image
+                                                source={{ uri: `${BASE_URL}/${task.file_path}` }}
+                                                style={{ width: '100%', height: 160, borderRadius: 8 }}
+                                                resizeMode="cover"
+                                            />
+                                        </TouchableOpacity>
+
+
+
                                     ) : (
                                         <Text className="text-yellow-600" onPress={() => Linking.openURL(`${BASE_URL}/${task.file_path}`)}>
                                             Download {task.file_path.split('/').pop()}

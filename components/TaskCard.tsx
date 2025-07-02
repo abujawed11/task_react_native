@@ -509,7 +509,8 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, location, expanded, toggleDes
         {/* Last Updated */}
         <View className="flex-row items-center">
           <LucideCalendar size={18} color="gray" className="mr-2" />
-          <Text className="text-sm text-black">Last Updated: {formatDateTime(task.updated_at)}</Text>
+          
+          <Text className="text-sm text-black">Last Updated: {formatDateTime(task.last_updated_at ?? task.updated_at)}</Text>
         </View>
       </View>
     </View>

@@ -1,3 +1,18 @@
+// export type Task = {
+//   id: number;
+//   task_id: string;
+//   title: string;
+//   description: string | null;
+//   priority: 'High' | 'Medium' | 'Low' | string;
+//   status: 'Pending' | 'In Progress' | 'Completed' | string;
+//   due_date: string | null;
+//   assigned_to: string;
+//   created_by: string;
+//   audio_path: string | null;
+//   file_path: string | null;
+//   created_at: string;
+//   updated_at: string;
+// };
 export type Task = {
   id: number;
   task_id: string;
@@ -11,8 +26,15 @@ export type Task = {
   audio_path: string | null;
   file_path: string | null;
   created_at: string;
-  updated_at: string;
+  updated_at: string; // From tasks table
+
+  // ✅ Add this field for /all endpoint
+  last_updated_at?: string;
+
+  // Optional: if assigned_by is returned in /all
+  assigned_by?: string;
 };
+
 
 export type TaskUpdate = {
   id: number;
@@ -70,3 +92,10 @@ export type TaskListFilters = {
   assigned_to?: string;
   created_by?: string;
 };
+
+// in task.types.ts
+export type SortConfig = {
+  field: string;
+  order: 'ASC' | 'DESC';
+};
+

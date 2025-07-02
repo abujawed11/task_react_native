@@ -155,106 +155,16 @@
 //   },
 // });
 
-import { useAuth } from '@/hooks/useAuth';
-import { BASE_URL } from '@/utils/constants';
-import { Entypo, Feather, FontAwesome } from '@expo/vector-icons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
-import { useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+// import { useAuth } from '@/hooks/useAuth';
+// import { BASE_URL } from '@/utils/constants';
+// import { Entypo, Feather, FontAwesome } from '@expo/vector-icons';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
+// import axios from 'axios';
+// import { useRouter } from 'expo-router';
+// import React, { useEffect, useState } from 'react';
+// import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-export default function Dashboard() {
-  const { user } = useAuth();
-  const router = useRouter();
-
-  const [stats, setStats] = useState({
-    assignedToMe: 0,
-    assignedByMe: 0,
-    pending: 0,
-    completed: 0,
-  });
-
-  const handleLogout = async () => {
-    await AsyncStorage.removeItem('token');
-    router.replace('/(auth)/login'); // redirect to login
-  };
-
-  useEffect(() => {
-    const fetchDashboardStats = async () => {
-      try {
-        const token = await AsyncStorage.getItem('token');
-        const res = await axios.get(`${BASE_URL}/api/tasks/dashboard`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setStats(res.data.stats);
-      } catch (err) {
-        console.error('Dashboard stats error:', err);
-      }
-    };
-
-    fetchDashboardStats();
-  }, []);
-
-  return (
-    <View className="flex-1 bg-yellow-100">
-      <ScrollView contentContainerStyle={{ padding: 16 }}>
-        {/* Top section with Logout */}
-        <View className="mb-6 flex-row justify-between items-center">
-          <View>
-            <Text className="text-2xl font-bold text-yellow-800">Welcome, {user?.username}!</Text>
-            <Text className="text-lg text-gray-700">
-              Role: <Text className="font-semibold">{user?.role}</Text> | Account Type: <Text className="font-semibold">{user?.accountType}</Text>
-            </Text>
-          </View>
-          {/* <TouchableOpacity
-            onPress={handleLogout}
-            className="bg-black px-3 py-2 rounded-lg"
-          >
-            <Text className="text-yellow-400 font-bold">Logout</Text>
-          </TouchableOpacity> */}
-        </View>
-
-        {/* Cards */}
-        <View className="grid grid-cols-2 gap-4">
-          <View style={styles.card}>
-            <UserIcon />
-            <Text style={styles.cardTitle}>My Tasks</Text>
-            <Text style={styles.cardCount}>{stats.assignedToMe}</Text>
-          </View>
-          <View style={styles.card}>
-            <Feather name="send" size={24} color="#facc15" />
-            <Text style={styles.cardTitle}>Assigned</Text>
-            <Text style={styles.cardCount}>{stats.assignedByMe}</Text>
-          </View>
-          <View style={styles.card}>
-            <Feather name="clock" size={24} color="#facc15" />
-            <Text style={styles.cardTitle}>Pending</Text>
-            <Text style={styles.cardCount}>{stats.pending}</Text>
-          </View>
-          <View style={styles.card}>
-            <Feather name="check-circle" size={24} color="#22c55e" />
-            <Text style={styles.cardTitle}>Completed</Text>
-            <Text style={styles.cardCount}>{stats.completed}</Text>
-          </View>
-        </View>
-      </ScrollView>
-
-      {/* Floating Create Button */}
-      <View style={styles.fabContainer}>
-        <TouchableOpacity
-          className="w-16 h-16 rounded-full bg-yellow-500 shadow-lg items-center justify-center"
-          onPress={() => router.push('/(dashboard)/create-task')}
-        >
-          <Entypo name="plus" size={30} color="black" />
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-}
-
-
-// export default function HomeScreen() {
+// export default function Dashboard() {
 //   const { user } = useAuth();
 //   const router = useRouter();
 
@@ -264,6 +174,11 @@ export default function Dashboard() {
 //     pending: 0,
 //     completed: 0,
 //   });
+
+//   const handleLogout = async () => {
+//     await AsyncStorage.removeItem('token');
+//     router.replace('/(auth)/login'); // redirect to login
+//   };
 
 //   useEffect(() => {
 //     const fetchDashboardStats = async () => {
@@ -283,15 +198,24 @@ export default function Dashboard() {
 
 //   return (
 //     <View className="flex-1 bg-yellow-100">
-//       {/* Scrollable Content */}
 //       <ScrollView contentContainerStyle={{ padding: 16 }}>
-//         <View className="mb-6">
-//           <Text className="text-2xl font-bold text-yellow-800">Welcome, {user?.username}!</Text>
-//           <Text className="text-lg text-gray-700">
-//             Role: <Text className="font-semibold">{user?.role}</Text> | Account Type: <Text className="font-semibold">{user?.accountType}</Text>
-//           </Text>
+//         {/* Top section with Logout */}
+//         <View className="mb-6 flex-row justify-between items-center">
+//           <View>
+//             <Text className="text-2xl font-bold text-yellow-800">Welcome, {user?.username}!</Text>
+//             <Text className="text-lg text-gray-700">
+//               Role: <Text className="font-semibold">{user?.role}</Text> | Account Type: <Text className="font-semibold">{user?.accountType}</Text>
+//             </Text>
+//           </View>
+//           {/* <TouchableOpacity
+//             onPress={handleLogout}
+//             className="bg-black px-3 py-2 rounded-lg"
+//           >
+//             <Text className="text-yellow-400 font-bold">Logout</Text>
+//           </TouchableOpacity> */}
 //         </View>
 
+//         {/* Cards */}
 //         <View className="grid grid-cols-2 gap-4">
 //           <View style={styles.card}>
 //             <UserIcon />
@@ -320,9 +244,7 @@ export default function Dashboard() {
 //       <View style={styles.fabContainer}>
 //         <TouchableOpacity
 //           className="w-16 h-16 rounded-full bg-yellow-500 shadow-lg items-center justify-center"
-//           // onPress={() => router.push('/create-task')}
 //           onPress={() => router.push('/(dashboard)/create-task')}
-
 //         >
 //           <Entypo name="plus" size={30} color="black" />
 //         </TouchableOpacity>
@@ -331,39 +253,151 @@ export default function Dashboard() {
 //   );
 // }
 
-function UserIcon() {
-  return <FontAwesome name="user" size={24} color="#facc15" />;
+// function UserIcon() {
+//   return <FontAwesome name="user" size={24} color="#facc15" />;
+// }
+
+// const styles = StyleSheet.create({
+//   card: {
+//     backgroundColor: '#fff',
+//     padding: 16,
+//     borderRadius: 16,
+//     alignItems: 'center',
+//     shadowColor: '#000',
+//     shadowOpacity: 0.1,
+//     shadowRadius: 8,
+//     shadowOffset: { width: 0, height: 2 },
+//     elevation: 3,
+//   },
+//   cardTitle: {
+//     fontSize: 14,
+//     color: '#374151',
+//     marginTop: 6,
+//   },
+//   cardCount: {
+//     fontSize: 20,
+//     fontWeight: 'bold',
+//     color: '#000',
+//     marginTop: 2,
+//   },
+//   fabContainer: {
+//     position: 'absolute',
+//     bottom: 35,
+//     left: 0,
+//     right: 0,
+//     alignItems: 'center',
+//   },
+// });
+
+import { useAuth } from '@/hooks/useAuth';
+import { BASE_URL } from '@/utils/constants';
+import { Entypo, Feather, FontAwesome } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import { useRouter } from 'expo-router';
+import React, { useEffect, useState } from 'react';
+import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
+
+export default function Dashboard() {
+  const { user } = useAuth();
+  const router = useRouter();
+
+  const [stats, setStats] = useState({
+    assignedToMe: 0,
+    assignedByMe: 0,
+    pending: 0,
+    completed: 0,
+  });
+
+  const handleLogout = async () => {
+    await AsyncStorage.removeItem('token');
+    router.replace('/(auth)/login');
+  };
+
+  useEffect(() => {
+    const fetchDashboardStats = async () => {
+      try {
+        const token = await AsyncStorage.getItem('token');
+        const res = await axios.get(`${BASE_URL}/api/tasks/dashboard`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setStats(res.data.stats);
+      } catch (err) {
+        console.error('Dashboard stats error:', err);
+      }
+    };
+
+    fetchDashboardStats();
+  }, []);
+
+  return (
+    <View className="flex-1 bg-yellow-100">
+      <ScrollView contentContainerStyle={{ padding: 16 }}>
+        {/* Header */}
+        <View className="mb-6 flex-row justify-between items-center">
+          <View>
+            <Text className="text-2xl font-bold text-yellow-800">Welcome, {user?.username}!</Text>
+            <Text className="text-lg text-gray-700">
+              Role: <Text className="font-semibold">{user?.role}</Text> | Account Type: <Text className="font-semibold">{user?.accountType}</Text>
+            </Text>
+          </View>
+        </View>
+
+        {/* Admin Panel */}
+        {user?.accountType === 'Super Admin' && (
+          <View className="mb-6 p-4 bg-yellow-200 rounded-xl border border-yellow-300">
+            <Text className="text-xl font-bold text-black mb-4">Admin Panel</Text>
+            <TouchableOpacity
+              className="bg-black px-4 py-3 rounded-lg mb-3"
+              onPress={() => router.push('/(dashboard)/manage-tasks')}
+            >
+              <Text className="text-white text-center font-semibold">Manage All Tasks</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              className="bg-black px-4 py-3 rounded-lg"
+              onPress={() => router.push('/(dashboard)/manage-users')}
+            >
+              <Text className="text-white text-center font-semibold">Manage All Users</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
+        {/* Stats Cards */}
+        <View className="grid grid-cols-2 gap-4">
+          <View className="bg-white p-4 rounded-xl items-center shadow-md">
+            <FontAwesome name="user" size={24} color="#facc15" />
+            <Text className="text-base text-gray-700 mt-2">My Tasks</Text>
+            <Text className="text-xl font-bold text-black">{stats.assignedToMe}</Text>
+          </View>
+          <View className="bg-white p-4 rounded-xl items-center shadow-md">
+            <Feather name="send" size={24} color="#facc15" />
+            <Text className="text-base text-gray-700 mt-2">Assigned</Text>
+            <Text className="text-xl font-bold text-black">{stats.assignedByMe}</Text>
+          </View>
+          <View className="bg-white p-4 rounded-xl items-center shadow-md">
+            <Feather name="clock" size={24} color="#facc15" />
+            <Text className="text-base text-gray-700 mt-2">Pending</Text>
+            <Text className="text-xl font-bold text-black">{stats.pending}</Text>
+          </View>
+          <View className="bg-white p-4 rounded-xl items-center shadow-md">
+            <Feather name="check-circle" size={24} color="#22c55e" />
+            <Text className="text-base text-gray-700 mt-2">Completed</Text>
+            <Text className="text-xl font-bold text-black">{stats.completed}</Text>
+          </View>
+        </View>
+      </ScrollView>
+
+      {/* Floating Create Button */}
+      <View className="absolute bottom-10 left-0 right-0 items-center">
+        <TouchableOpacity
+          className="w-16 h-16 rounded-full bg-yellow-500 shadow-lg items-center justify-center"
+          onPress={() => router.push('/(dashboard)/create-task')}
+        >
+          <Entypo name="plus" size={30} color="black" />
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
 }
 
-const styles = StyleSheet.create({
-  card: {
-    backgroundColor: '#fff',
-    padding: 16,
-    borderRadius: 16,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 3,
-  },
-  cardTitle: {
-    fontSize: 14,
-    color: '#374151',
-    marginTop: 6,
-  },
-  cardCount: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#000',
-    marginTop: 2,
-  },
-  fabContainer: {
-    position: 'absolute',
-    bottom: 35,
-    left: 0,
-    right: 0,
-    alignItems: 'center',
-  },
-});
 
