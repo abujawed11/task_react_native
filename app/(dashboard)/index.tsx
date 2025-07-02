@@ -402,7 +402,6 @@
 
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { useNavigation } from '@react-navigation/native';
-import { useLayoutEffect } from 'react';
 import AssignTaskScreen from './assigned-tasks';
 import Dashboard from './dashboard';
 import MyTaskScreen from './my-tasks';
@@ -424,21 +423,21 @@ export default function DashboardTabs() {
 
   //   return unsubscribe;
   // }, [navigation]);
-    useLayoutEffect(() => {
-    const unsubscribe = navigation.addListener('state', (e: any) => {
-      const state = e.data?.state || e.target?.state;
+  //   useLayoutEffect(() => {
+  //   const unsubscribe = navigation.addListener('state', (e: any) => {
+  //     const state = e.data?.state || e.target?.state;
 
-      if (!state) return;
+  //     if (!state) return;
 
-      const index = state.index;
-      const tabRoute = state.routes[index];
-      const title = tabRoute.name;
+  //     const index = state.index;
+  //     const tabRoute = state.routes[index];
+  //     const title = tabRoute.name;
 
-      navigation.setOptions({ headerTitle: title });
-    });
+  //     navigation.setOptions({ headerTitle: title });
+  //   });
 
-    return unsubscribe;
-  }, [navigation]);
+  //   return unsubscribe;
+  // }, [navigation]);
 
   return (
     <Tab.Navigator
@@ -449,6 +448,7 @@ export default function DashboardTabs() {
         tabBarInactiveTintColor: 'gray',
       }}
     >
+      {/* <Tab.Screen name="index" /> */}
       <Tab.Screen name="Dashboard" component={Dashboard} />
       <Tab.Screen name="My Task" component={MyTaskScreen} />
       <Tab.Screen name="Assign Task" component={AssignTaskScreen} />
@@ -457,5 +457,8 @@ export default function DashboardTabs() {
 }
 
 
-
+// export const options = {
+//   title: 'Dashboard',
+//   drawerLabel: 'Dashboard',
+// };
 

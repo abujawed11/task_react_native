@@ -44,7 +44,7 @@ export default function UpdateTaskScreen() {
     const [sound, setSound] = useState<Audio.Sound | null>(null);
     const [isPlaying, setIsPlaying] = useState(false);
 
-    let token: string | null;
+    // let token: string | null;
 
     const playAudio = async () => {
         if (!audioUri) return;
@@ -85,12 +85,12 @@ export default function UpdateTaskScreen() {
 
 
         try {
-            console.log('Fetching task with ID:', taskId);
-            token = await AsyncStorage.getItem('token');
+            // console.log('Fetching task with ID:', taskId);
+            const token = await AsyncStorage.getItem('token');
             const res = await axios.get(`${BASE_URL}/api/tasks/${taskId}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
-            console.log('Task data:', res.data);
+            // console.log('Task data:', res.data);
             const data = res.data;
             setTask(data);
             setTitle(data.title);
@@ -109,7 +109,7 @@ export default function UpdateTaskScreen() {
 
     const fetchUsers = async () => {
         try {
-            // const token = await AsyncStorage.getItem('token');
+            const token = await AsyncStorage.getItem('token');
             const res = await axios.get(`${BASE_URL}/api/tasks/list`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
@@ -122,7 +122,7 @@ export default function UpdateTaskScreen() {
     useEffect(() => {
         fetchTask();
         fetchUsers();
-    }, []);
+    }, [taskId,BASE_URL]);
 
     const startRecording = async () => {
         try {
@@ -189,7 +189,7 @@ export default function UpdateTaskScreen() {
         }
 
         try {
-            // const token = await AsyncStorage.getItem('token');
+            const token = await AsyncStorage.getItem('token');
             await axios.put(`${BASE_URL}/api/tasks/${taskId}/update`, formData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -211,9 +211,9 @@ export default function UpdateTaskScreen() {
 
     const isCreator = user?.username === task.created_by || user?.accountType === 'Super Admin';
     const isAssignee = user?.username === task.assigned_to;
-    console.log(user?.username)
-    console.log("Task created",task.created_by)
-    console.log(isCreator)
+    // console.log(user?.username)
+    // console.log("Task created",task.created_by)
+    // console.log(isCreator)
 
     return (
         <ScrollView className="p-4 bg-yellow-50 min-h-screen">

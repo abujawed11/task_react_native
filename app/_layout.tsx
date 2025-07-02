@@ -213,6 +213,7 @@
 // app/_layout.tsx
 // app/_layout.tsx
 import { AuthProvider } from '@/context/AuthContext';
+import { NotificationProvider } from '@/context/NotificationContext';
 import { Slot } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import '../global.css';
@@ -221,7 +222,9 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <AuthProvider>
-        <Slot />
+        <NotificationProvider>
+          <Slot />
+        </NotificationProvider>
       </AuthProvider>
     </GestureHandlerRootView>
   );

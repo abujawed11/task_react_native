@@ -1,9 +1,9 @@
 import { Text, View } from 'react-native';
 
-export default function NotificationsScreen() {
+export default function ProfileScreen() {
   return (
     <View className="flex-1 items-center justify-center bg-white">
-      <Text className="text-xl font-bold text-black">Notifications</Text>
+      <Text className="text-xl font-bold text-black">Settings</Text>
     </View>
   );
 }
