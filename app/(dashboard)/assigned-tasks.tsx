@@ -184,7 +184,7 @@ const AssignedTasksScreen: React.FC = () => {
               task={task}
               expanded={!!expandedDescriptions[task.task_id]}
               toggleDescription={toggleDescription}
-              location="adminTasks"
+              location="assignedTasks"
             />
           ))}
         </View>

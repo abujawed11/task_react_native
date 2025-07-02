@@ -49,12 +49,10 @@ Join our community of developers creating universal apps.
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
 
+
 ```
-task_react_native_live
+task_react_native
 ├─ app
-│  ├─ (admin)
-│  │  ├─ manage-tasks.tsx
-│  │  └─ manage-users.tsx
 │  ├─ (auth)
 │  │  ├─ login.tsx
 │  │  ├─ signup.tsx
@@ -64,18 +62,20 @@ task_react_native_live
 │  │  ├─ create-task.tsx
 │  │  ├─ dashboard.tsx
 │  │  ├─ index.tsx
+│  │  ├─ manage-tasks.tsx
+│  │  ├─ manage-users.tsx
 │  │  ├─ my-tasks.tsx
 │  │  ├─ task-progress
 │  │  │  └─ [taskId].tsx
+│  │  ├─ tasks
+│  │  │  └─ [taskId]
+│  │  │     └─ update.tsx
 │  │  ├─ update-task
 │  │  │  └─ [taskId].tsx
 │  │  └─ _layout.tsx
 │  ├─ index.tsx
 │  ├─ notifications.tsx
 │  ├─ profile.tsx
-│  ├─ tasks
-│  │  └─ [taskId]
-│  │     └─ update.tsx
 │  └─ _layout.tsx
 ├─ app.json
 ├─ assets
@@ -145,7 +145,7 @@ task_react_native_live
 
 ```
 ```
-task_react_native_live
+task_react_native
 ├─ app
 │  ├─ (auth)
 │  │  ├─ login.tsx
@@ -161,15 +161,15 @@ task_react_native_live
 │  │  ├─ my-tasks.tsx
 │  │  ├─ task-progress
 │  │  │  └─ [taskId].tsx
+│  │  ├─ tasks
+│  │  │  └─ [taskId]
+│  │  │     └─ update.tsx
 │  │  ├─ update-task
 │  │  │  └─ [taskId].tsx
 │  │  └─ _layout.tsx
 │  ├─ index.tsx
 │  ├─ notifications.tsx
 │  ├─ profile.tsx
-│  ├─ tasks
-│  │  └─ [taskId]
-│  │     └─ update.tsx
 │  └─ _layout.tsx
 ├─ app.json
 ├─ assets
@@ -202,6 +202,7 @@ task_react_native_live
 │  ├─ AuthContext.tsx
 │  ├─ NotificationContext.tsx
 │  └─ ThemeContext.tsx
+├─ eas.json
 ├─ eslint.config.js
 ├─ global.css
 ├─ hooks

@@ -6,9 +6,20 @@
 // }
 
 
-import { Redirect } from "expo-router";
+const OriginalError = console.error;
+console.error = (...args) => {
+  if (
+    typeof args[0] === 'string' &&
+    args[0].startsWith('Warning: Text strings must be rendered')
+  ) {
+    console.trace('Text string warning:', ...args);
+  }
+  OriginalError(...args);
+};
+
 import { useAuth } from "@/hooks/useAuth";
-import { View, ActivityIndicator } from "react-native";
+import { Redirect } from "expo-router";
+import { ActivityIndicator, View } from "react-native";
 
 export default function Home() {
   const { user, loading } = useAuth();

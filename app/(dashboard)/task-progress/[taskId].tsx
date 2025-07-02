@@ -14,7 +14,7 @@ const TaskProgress = () => {
     // const { taskId } = useLocalSearchParams<{ taskId: string }>();
     const { taskId } = useLocalSearchParams<{ taskId: string }>();
 
-    console.log('taskId from route:', taskId);
+    // console.log('taskId from route:', taskId);
     const router = useRouter();
     const [task, setTask] = useState<Task | null>(null);
     const [updates, setUpdates] = useState<TaskUpdate[]>([]);

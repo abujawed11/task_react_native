@@ -10,16 +10,6 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
-// interface Task {
-//   title: string;
-//   description: string;
-//   due_date: string;
-//   priority: string;
-//   assigned_to: string;
-//   created_by: string;
-//   status: string;
-// }
-
 export default function UpdateTaskScreen() {
     // const { taskId } = useLocalSearchParams<{ taskId: string }>();
     const { taskId, from } = useLocalSearchParams<{ taskId: string; from?: string }>();
@@ -44,7 +34,7 @@ export default function UpdateTaskScreen() {
     const [sound, setSound] = useState<Audio.Sound | null>(null);
     const [isPlaying, setIsPlaying] = useState(false);
 
-    let token: string | null;
+    // let token: string | null;
 
     const playAudio = async () => {
         if (!audioUri) return;
@@ -86,7 +76,7 @@ export default function UpdateTaskScreen() {
 
         try {
             console.log('Fetching task with ID:', taskId);
-            token = await AsyncStorage.getItem('token');
+            const token = await AsyncStorage.getItem('token');
             const res = await axios.get(`${BASE_URL}/api/tasks/${taskId}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
@@ -109,7 +99,7 @@ export default function UpdateTaskScreen() {
 
     const fetchUsers = async () => {
         try {
-            // const token = await AsyncStorage.getItem('token');
+            const token = await AsyncStorage.getItem('token');
             const res = await axios.get(`${BASE_URL}/api/tasks/list`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
@@ -122,7 +112,7 @@ export default function UpdateTaskScreen() {
     useEffect(() => {
         fetchTask();
         fetchUsers();
-    }, []);
+    }, [taskId, BASE_URL]);
 
     const startRecording = async () => {
         try {
@@ -189,7 +179,7 @@ export default function UpdateTaskScreen() {
         }
 
         try {
-            // const token = await AsyncStorage.getItem('token');
+            const token = await AsyncStorage.getItem('token');
             await axios.put(`${BASE_URL}/api/tasks/${taskId}/update`, formData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -212,14 +202,16 @@ export default function UpdateTaskScreen() {
     const isCreator = user?.username === task.created_by || user?.accountType === 'Super Admin';
     const isAssignee = user?.username === task.assigned_to;
     console.log(user?.username)
-    console.log("Task created",task.created_by)
+    console.log("Task created", task.created_by)
     console.log(isCreator)
+    console.log("Task assigned to", task.assigned_to);
+    console.log("isAssignee:", isAssignee);
 
     return (
         <ScrollView className="p-4 bg-yellow-50 min-h-screen">
             <Text className="text-2xl font-bold text-center text-black mb-4">Update Task</Text>
 
-            {isCreator && (
+            {isCreator  && !isAssignee &&(
                 <>
                     <TextInput className="border p-2 rounded mb-3 bg-white" value={title} onChangeText={setTitle} placeholder="Title" />
                     <TextInput className="border p-2 rounded mb-3 bg-white" value={description} onChangeText={setDescription} placeholder="Description" multiline />
@@ -240,14 +232,15 @@ export default function UpdateTaskScreen() {
                             {users
                                 .filter((u) => u !== task?.created_by)
                                 .map((u) => (
-                                    <Picker.Item label={u} value={u} key={u} />
+                                    // <Picker.Item label={u} value={u} key={u} />
+                                    <Picker.Item label={u.toString()} value={u} key={u} />
                                 ))}
                         </Picker>
                     </View>
                 </>
             )}
 
-            {isAssignee && (
+            {isAssignee && !isCreator && (
                 <View className="border rounded mb-3 bg-white">
                     <Picker selectedValue={status} onValueChange={setStatus}>
                         <Picker.Item label="Select Status" value="" />
@@ -310,3 +303,4 @@ export default function UpdateTaskScreen() {
         </ScrollView>
     );
 }
+

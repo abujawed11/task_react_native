@@ -347,7 +347,7 @@ interface TaskCardProps {
   task: Task & {
     assigned_by?: string;
   };
-  location: 'myTasks' | 'adminTasks';
+  location: 'myTasks' | 'adminTasks' | 'assignedTasks';
   expanded: boolean;
   toggleDescription: (taskId: string) => void;
 }
@@ -413,108 +413,113 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, location, expanded, toggleDes
 
           <TouchableOpacity
             onPress={() =>
-              router.push({
-                pathname: '/tasks/[taskId]/update',
-                params: { taskId: task.task_id, from: location },
-              })
-            }
-            className="bg-yellow-500 px-2 py-1 rounded ml-3"
+              // router.push({
+              //   pathname: '/(dashboard)/tasks/[taskId]/update',
+              //   params: { taskId: task.task_id, from: location },
+              // })
+              router.push(`/tasks/${task.task_id}/update?from=${location}`)
+              // router.push({
+            //   pathname: '/tasks/[taskId]/update',
+            //   params: { taskId: task.task_id, from: location },
+            // })
+          }
+          className="bg-yellow-500 px-2 py-1 rounded ml-3"
           >
-            <Text className="text-white text-xs">Update</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      {/* Description */}
-      <View>
-        <Text className="text-sm text-black mb-1">
-          {expanded || (task.description || '').length <= 100
-            ? task.description || 'No description'
-            : `${task.description?.slice(0, 100)}...`}
-        </Text>
-        {task.description && task.description.length > 100 && (
-          <TouchableOpacity onPress={() => toggleDescription(task.task_id)}>
-            <Text className="text-yellow-500 font-medium">
-              {expanded ? 'Read Less' : 'Read More'}
-            </Text>
-          </TouchableOpacity>
-        )}
-      </View>
-
-      {/* Info Rows - now spaced more with space-y-3 */}
-      <View className="space-y-3">
-        {/* Priority */}
-        <View className="flex-row items-center">
-          {task.priority === 'High' && <LucideFlame size={18} color="red" className="mr-2" />}
-          {task.priority === 'Medium' && <LucideFlame size={18} color="orange" className="mr-2" />}
-          {task.priority === 'Low' && <LucideArrowDown size={18} color="blue" className="mr-2" />}
-          <Text className="text-sm text-black">Priority: {task.priority}</Text>
-        </View>
-
-        {/* Status */}
-        <View className="flex-row items-center">
-          {task.status === 'Pending' && <LucideClock size={18} color="gray" className="mr-2" />}
-          {task.status === 'In Progress' && <LucidePlay size={18} color="blue" className="mr-2" />}
-          {task.status === 'Completed' && <LucideCheckCircle size={18} color="green" className="mr-2" />}
-          <Text className="text-sm text-black">Status: {task.status}</Text>
-        </View>
-
-        {/* Created At */}
-        <View className="flex-row items-center">
-          <LucideCalendar size={18} color="gray" className="mr-2" />
-          <Text className="text-sm text-black">Created: {formatDateTime(task.created_at)}</Text>
-        </View>
-
-        {/* Due Date */}
-        <View className="flex-row items-center">
-          <LucideCalendar size={18} color="gray" className="mr-2" />
-          <Text
-            className={twMerge(
-              'text-sm',
-              isOverdue(task.due_date) ? 'text-red-600 font-semibold' : 'text-black'
-            )}
-          >
-            Due: {formatDate(task.due_date)}
-          </Text>
-        </View>
-
-        {/* Assignment Info */}
-        {isAdminView ? (
-          <>
-            <View className="flex-row items-center">
-              <LucideUser size={18} color="gray" className="mr-2" />
-              <Text className="text-sm text-black">Created By: {task.created_by}</Text>
-            </View>
-            {task.created_by !== task.assigned_by && task.assigned_by && (
-              <View className="flex-row items-center">
-                <LucideUser size={18} color="gray" className="mr-2" />
-                <Text className="text-sm text-black">Re-assigned By: {task.assigned_by}</Text>
-              </View>
-            )}
-            <View className="flex-row items-center">
-              <LucideUser size={18} color="gray" className="mr-2" />
-              <Text className="text-sm text-black">Assigned To: {task.assigned_to}</Text>
-            </View>
-          </>
-        ) : (
-          <View className="flex-row items-center">
-            <LucideUser size={18} color="gray" className="mr-2" />
-            <Text className="text-sm text-black">
-              {location === 'myTasks'
-                ? `Assigned By: ${task.assigned_by || task.created_by}`
-                : `Assigned To: ${task.assigned_to}`}
-            </Text>
-          </View>
-        )}
-
-        {/* Last Updated */}
-        <View className="flex-row items-center">
-          <LucideCalendar size={18} color="gray" className="mr-2" />
-          
-          <Text className="text-sm text-black">Last Updated: {formatDateTime(task.last_updated_at ?? task.updated_at)}</Text>
-        </View>
+          <Text className="text-white text-xs">Update</Text>
+        </TouchableOpacity>
       </View>
     </View>
+
+      {/* Description */ }
+  <View>
+    <Text className="text-sm text-black mb-1">
+      {expanded || (task.description || '').length <= 100
+        ? task.description || 'No description'
+        : `${task.description?.slice(0, 100)}...`}
+    </Text>
+    {task.description && task.description.length > 100 && (
+      <TouchableOpacity onPress={() => toggleDescription(task.task_id)}>
+        <Text className="text-yellow-500 font-medium">
+          {expanded ? 'Read Less' : 'Read More'}
+        </Text>
+      </TouchableOpacity>
+    )}
+  </View>
+
+  {/* Info Rows - now spaced more with space-y-3 */ }
+  <View className="space-y-3">
+    {/* Priority */}
+    <View className="flex-row items-center">
+      {task.priority === 'High' && <LucideFlame size={18} color="red" className="mr-2" />}
+      {task.priority === 'Medium' && <LucideFlame size={18} color="orange" className="mr-2" />}
+      {task.priority === 'Low' && <LucideArrowDown size={18} color="blue" className="mr-2" />}
+      <Text className="text-sm text-black">Priority: {task.priority}</Text>
+    </View>
+
+    {/* Status */}
+    <View className="flex-row items-center">
+      {task.status === 'Pending' && <LucideClock size={18} color="gray" className="mr-2" />}
+      {task.status === 'In Progress' && <LucidePlay size={18} color="blue" className="mr-2" />}
+      {task.status === 'Completed' && <LucideCheckCircle size={18} color="green" className="mr-2" />}
+      <Text className="text-sm text-black">Status: {task.status}</Text>
+    </View>
+
+    {/* Created At */}
+    <View className="flex-row items-center">
+      <LucideCalendar size={18} color="gray" className="mr-2" />
+      <Text className="text-sm text-black">Created: {formatDateTime(task.created_at)}</Text>
+    </View>
+
+    {/* Due Date */}
+    <View className="flex-row items-center">
+      <LucideCalendar size={18} color="gray" className="mr-2" />
+      <Text
+        className={twMerge(
+          'text-sm',
+          isOverdue(task.due_date) ? 'text-red-600 font-semibold' : 'text-black'
+        )}
+      >
+        Due: {formatDate(task.due_date)}
+      </Text>
+    </View>
+
+    {/* Assignment Info */}
+    {isAdminView ? (
+      <>
+        <View className="flex-row items-center">
+          <LucideUser size={18} color="gray" className="mr-2" />
+          <Text className="text-sm text-black">Created By: {task.created_by}</Text>
+        </View>
+        {task.created_by !== task.assigned_by && task.assigned_by && (
+          <View className="flex-row items-center">
+            <LucideUser size={18} color="gray" className="mr-2" />
+            <Text className="text-sm text-black">Re-assigned By: {task.assigned_by}</Text>
+          </View>
+        )}
+        <View className="flex-row items-center">
+          <LucideUser size={18} color="gray" className="mr-2" />
+          <Text className="text-sm text-black">Assigned To: {task.assigned_to}</Text>
+        </View>
+      </>
+    ) : (
+      <View className="flex-row items-center">
+        <LucideUser size={18} color="gray" className="mr-2" />
+        <Text className="text-sm text-black">
+          {location === 'myTasks'
+            ? `Assigned By: ${task.assigned_by || task.created_by}`
+            : `Assigned To: ${task.assigned_to}`}
+        </Text>
+      </View>
+    )}
+
+    {/* Last Updated */}
+    <View className="flex-row items-center">
+      <LucideCalendar size={18} color="gray" className="mr-2" />
+
+      <Text className="text-sm text-black">Last Updated: {formatDateTime(task.last_updated_at ?? task.updated_at)}</Text>
+    </View>
+  </View>
+    </View >
   );
 };
 

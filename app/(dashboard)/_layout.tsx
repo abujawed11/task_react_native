@@ -96,12 +96,14 @@
 // app/(dashboard)/_layout.tsx
 import CustomDrawer from '@/components/CustomDrawer';
 import { useAuth } from '@/context/AuthContext';
-import { Redirect } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
+import { Redirect, router, useNavigation } from 'expo-router';
 import { Drawer } from 'expo-router/drawer';
-import { ActivityIndicator, View } from 'react-native';
+import { ActivityIndicator, Text, TouchableOpacity, View } from 'react-native';
 
 export default function DashboardLayout() {
   const { user, loading } = useAuth();
+  const navigation = useNavigation();
 
   if (loading) {
     return (
@@ -124,15 +126,79 @@ export default function DashboardLayout() {
         headerTintColor: 'black',
       }}
     >
-      <Drawer.Screen name="index" options={{ drawerLabel: 'Dashboard' }} />
-      
-      <Drawer.Screen name="assigned-tasks" options={{ drawerLabel: 'Assigned Tasks' }} />
-      <Drawer.Screen name="my-tasks" options={{ drawerLabel: 'My Tasks' }} />
+      <Drawer.Screen
+        name="index"
+        options={{
+          drawerLabel: () => <Text>Dashboard</Text>,
+          headerRight: () => (
+            <TouchableOpacity
+              onPress={() => router.push('/notifications')}
+              style={{ marginRight: 15 }}
+            >
+              <Ionicons name="notifications-outline" size={24} color="black" />
+            </TouchableOpacity>
+          ),
+        }}
+      />
+      <Drawer.Screen name="assigned-tasks" options={{ drawerLabel: () => <Text>Assigned Tasks</Text> }} />
+      <Drawer.Screen name="my-tasks" options={{ drawerLabel: () => <Text>My Tasks</Text> }} />
       <Drawer.Screen name="create-task" options={{ drawerItemStyle: { display: 'none' } }} />
       <Drawer.Screen name="task-progress" options={{ drawerItemStyle: { display: 'none' } }} />
+      <Drawer.Screen name="notifications" options={{ drawerItemStyle: { display: 'none' } }} />
     </Drawer>
   );
 }
+
+
+
+
+// import CustomDrawer from '@/components/CustomDrawer';
+// import { useAuth } from '@/context/AuthContext';
+// import { Redirect } from 'expo-router';
+// import { Drawer } from 'expo-router/drawer';
+// import { ActivityIndicator, Text, View } from 'react-native';
+
+// export default function DashboardLayout() {
+//   const { user, loading } = useAuth();
+
+//   if (loading) {
+//     return (
+//       <View className="flex-1 justify-center items-center bg-white">
+//         <ActivityIndicator size="large" color="orange" />
+//       </View>
+//     );
+//   }
+
+//   if (!user) {
+//     return <Redirect href="/(auth)/login" />;
+//   }
+
+//   return (
+//     <Drawer
+//       drawerContent={(props) => <CustomDrawer {...props} />}
+//       screenOptions={{
+//         drawerPosition: 'left',
+//         headerStyle: { backgroundColor: '#facc15' },
+//         headerTintColor: 'black',
+//       }}
+//     >
+//       {/* <Drawer.Screen name="index" options={{ drawerLabel: 'Dashboard' }} />
+      
+//       <Drawer.Screen name="assigned-tasks" options={{ drawerLabel: 'Assigned Tasks' }} />
+//       <Drawer.Screen name="my-tasks" options={{ drawerLabel: 'My Tasks' }} />
+//       <Drawer.Screen name="create-task" options={{ drawerItemStyle: { display: 'none' } }} />
+      
+//       <Drawer.Screen name="task-progress" options={{ drawerItemStyle: { display: 'none' } }} /> */}
+
+//       <Drawer.Screen name="index" options={{ drawerLabel: () => <Text>Dashboard</Text> }} />
+//       <Drawer.Screen name="assigned-tasks" options={{ drawerLabel: () => <Text>Assigned Tasks</Text> }} />
+//       <Drawer.Screen name="my-tasks" options={{ drawerLabel: () => <Text>My Tasks</Text> }} />
+//       <Drawer.Screen name="create-task" options={{ drawerItemStyle: { display: 'none' } }} />
+//       <Drawer.Screen name="task-progress" options={{ drawerItemStyle: { display: 'none' } }} />
+
+//     </Drawer>
+//   );
+// }
 
 
 
