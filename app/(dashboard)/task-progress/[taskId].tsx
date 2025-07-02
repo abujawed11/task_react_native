@@ -9,6 +9,7 @@ import { BASE_URL } from '@/utils/constants';
 import { FontAwesome5, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import { Audio } from 'expo-av';
 
 const TaskProgress = () => {
     // const { taskId } = useLocalSearchParams<{ taskId: string }>();
@@ -19,6 +20,47 @@ const TaskProgress = () => {
     const [task, setTask] = useState<Task | null>(null);
     const [updates, setUpdates] = useState<TaskUpdate[]>([]);
     const [loading, setLoading] = useState(true);
+
+        const [sound, setSound] = useState<Audio.Sound | null>(null);
+        const [isPlaying, setIsPlaying] = useState(false);
+
+            const handlePlayPause = async () => {
+                try {
+                    if (!sound) {
+                        const { sound: newSound, status } = await Audio.Sound.createAsync(
+                            { uri: `${BASE_URL}/${task?.audio_path}` },
+                            { shouldPlay: false } // Don’t auto-play
+                        );
+        
+                        await newSound.setIsLoopingAsync(false); // ❗ Important
+        
+                        newSound.setOnPlaybackStatusUpdate((status) => {
+                            if ('isLoaded' in status && status.isLoaded && status.didJustFinish) {
+                                setIsPlaying(false);
+                                newSound.unloadAsync(); // Unload the sound when finished
+                                setSound(null); // Reset sound state
+                            }
+                        });
+        
+                        setSound(newSound);
+                        await newSound.playAsync();
+                        setIsPlaying(true);
+                    } else {
+                        const status = await sound.getStatusAsync();
+                        if ('isLoaded' in status && status.isLoaded) {
+                            if (status.isPlaying) {
+                                await sound.pauseAsync();
+                                setIsPlaying(false);
+                            } else {
+                                await sound.playAsync();
+                                setIsPlaying(true);
+                            }
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error playing/pausing audio:', error);
+                }
+            };
 
 
     const getPriorityIcon = (priority: string) => {
@@ -171,10 +213,18 @@ const TaskProgress = () => {
                             </View>
 
                             {task.audio_path && (
+                                // <View className="mt-2">
+                                //     <Text className="text-black font-medium mb-1">Audio Note:</Text>
+                                //     <Text className="text-blue-500" onPress={() => Linking.openURL(`${BASE_URL}/${task.audio_path}`)}>Play Audio</Text>
+                                // </View>
                                 <View className="mt-2">
-                                    <Text className="text-black font-medium mb-1">Audio Note:</Text>
-                                    <Text className="text-blue-500" onPress={() => Linking.openURL(`${BASE_URL}/${task.audio_path}`)}>Play Audio</Text>
-                                </View>
+                                                        <Text className="text-black font-medium mb-1">Audio Note:</Text>
+                                                        <Button
+                                                            title={isPlaying ? 'Pause Audio' : 'Play Audio'}
+                                                            onPress={handlePlayPause}
+                                                            color="#facc15"
+                                                        />
+                                                    </View>
                             )}
 
                             {task.file_path && (

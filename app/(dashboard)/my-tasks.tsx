@@ -1072,6 +1072,10 @@ const MyTasksScreen = () => {
     let filtered = [...tasks];
 
     // Filters
+    if (filters.assigned_to) filtered = filtered.filter((t) => t.assigned_to === filters.assigned_to);
+    if (filters.created_by) {
+      filtered = filtered.filter((task) => task.created_by === filters.created_by);
+    }
     if (filters.status) filtered = filtered.filter((t) => t.status === filters.status);
     if (filters.priority) filtered = filtered.filter((t) => t.priority === filters.priority);
     if (filters.due_date) filtered = filtered.filter((t) => t.due_date?.slice(0, 10) === filters.due_date);

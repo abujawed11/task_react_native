@@ -512,7 +512,7 @@ interface Props {
   filters: TaskFilters;
   setFilters: React.Dispatch<React.SetStateAction<TaskFilters>>;
   users: { username: string }[];
-  pageType: 'myTasks' | 'assignTasks' | 'allTasks';
+  pageType: 'myTasks' | 'assignTasks' | 'allTasks'| 'adminTasks';
 }
 
 const TaskFilterModal: React.FC<Props> = ({

@@ -347,7 +347,7 @@ interface TaskCardProps {
   task: Task & {
     assigned_by?: string;
   };
-  location: 'myTasks' | 'adminTasks';
+  location: 'myTasks' | 'adminTasks' | 'assignTasks';
   expanded: boolean;
   toggleDescription: (taskId: string) => void;
 }
