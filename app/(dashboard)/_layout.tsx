@@ -137,7 +137,7 @@
 // import CustomDrawer from '@/components/CustomDrawer';
 import BellWithNotification from '@/components/NotificationBell';
 import { useAuth } from '@/context/AuthContext';
-import { AntDesign, Entypo, MaterialCommunityIcons, SimpleLineIcons } from '@expo/vector-icons';
+import { AntDesign, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import { Redirect, router, useRouter } from 'expo-router';
@@ -242,8 +242,8 @@ export default function DashboardLayout() {
           <View className="w-20 h-20 rounded-full bg-yellow-400 items-center justify-center mb-3">
             <AntDesign name="user" size={40} color="black" />
           </View>
-          <Text className="text-white font-bold text-lg">{user?.username}</Text>
-          <Text className="text-yellow-400 text-sm mt-1">{user?.role} | {user?.accountType}</Text>
+          <Text className="text-black font-bold text-lg">{(user?.username)?.toUpperCase()}</Text>
+          <Text className="text-black-400 font-bold text-sm mt-1">{user?.role} | {user?.accountType}</Text>
         </View>
 
         <View className="mt-6">
@@ -271,7 +271,8 @@ export default function DashboardLayout() {
           <DrawerItem
             label="Settings"
             onPress={() => router.push('/settings')}
-            icon={({ size }) => <SimpleLineIcons name="settings" size={size} color="#facc15" />}
+            // icon={({ size }) => <SimpleLineIcons name="settings" size={size} color="#facc15" />}
+            icon={({ size }) => <AntDesign name="setting" size={24} color="#facc15" />}
             labelStyle={{ color: '#facc15', fontWeight: 'bold' }}
             style={{ backgroundColor: 'transparent' }}
           />
