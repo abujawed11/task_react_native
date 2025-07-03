@@ -49,195 +49,7 @@ Join our community of developers creating universal apps.
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
 
-```
-task_react_native_live
-├─ app
-│  ├─ (admin)
-│  │  ├─ manage-tasks.tsx
-│  │  └─ manage-users.tsx
-│  ├─ (auth)
-│  │  ├─ login.tsx
-│  │  ├─ signup.tsx
-│  │  └─ _layout.tsx
-│  ├─ (dashboard)
-│  │  ├─ assigned-tasks.tsx
-│  │  ├─ create-task.tsx
-│  │  ├─ dashboard.tsx
-│  │  ├─ index.tsx
-│  │  ├─ my-tasks.tsx
-│  │  ├─ task-progress
-│  │  │  └─ [taskId].tsx
-│  │  ├─ update-task
-│  │  │  └─ [taskId].tsx
-│  │  └─ _layout.tsx
-│  ├─ index.tsx
-│  ├─ notifications.tsx
-│  ├─ profile.tsx
-│  ├─ tasks
-│  │  └─ [taskId]
-│  │     └─ update.tsx
-│  └─ _layout.tsx
-├─ app.json
-├─ assets
-│  ├─ animations
-│  │  └─ mascot.json
-│  ├─ fonts
-│  │  └─ SpaceMono-Regular.ttf
-│  └─ images
-│     ├─ adaptive-icon.png
-│     ├─ favicon.png
-│     ├─ icon.png
-│     ├─ partial-react-logo.png
-│     ├─ react-logo.png
-│     ├─ react-logo@2x.png
-│     ├─ react-logo@3x.png
-│     └─ splash-icon.png
-├─ babel.config.js
-├─ components
-│  ├─ CustomDrawer.tsx
-│  ├─ FloatingButton.tsx
-│  ├─ Graph.tsx
-│  ├─ NotificationBell.tsx
-│  ├─ TaskCard.tsx
-│  ├─ TaskFilterMenu.tsx
-│  ├─ TaskFilters.tsx
-│  ├─ TaskSortMenu.tsx
-│  ├─ TaskUpdateCard.tsx
-│  └─ UserAvatar.tsx
-├─ context
-│  ├─ AuthContext.tsx
-│  ├─ NotificationContext.tsx
-│  └─ ThemeContext.tsx
-├─ eslint.config.js
-├─ global.css
-├─ hooks
-│  ├─ useAuth.ts
-│  ├─ useFilteredSortedTasks.ts
-│  └─ useNotifications.ts
-├─ metro.config.js
-├─ nativewind-env.d.ts
-├─ navigation
-│  ├─ AppNavigator.tsx
-│  ├─ AuthNavigator.tsx
-│  ├─ DashboardTabsNavigator.tsx
-│  ├─ DrawerNavigator.tsx
-│  └─ navigationTypes.ts
-├─ package-lock.json
-├─ package.json
-├─ README.md
-├─ services
-│  ├─ authService.ts
-│  ├─ notificationService.ts
-│  └─ taskService.ts
-├─ tailwind.config.js
-├─ tsconfig.json
-├─ types
-│  ├─ index.d.ts
-│  ├─ index.ts
-│  ├─ notification.types.ts
-│  ├─ task.types.ts
-│  └─ user.types.ts
-└─ utils
-   ├─ constants.ts
-   ├─ downloadExcel.ts
-   ├─ formatDate.ts
-   └─ taskUtils.ts
 
-```
-```
-task_react_native_live
-├─ app
-│  ├─ (auth)
-│  │  ├─ login.tsx
-│  │  ├─ signup.tsx
-│  │  └─ _layout.tsx
-│  ├─ (dashboard)
-│  │  ├─ assigned-tasks.tsx
-│  │  ├─ create-task.tsx
-│  │  ├─ dashboard.tsx
-│  │  ├─ index.tsx
-│  │  ├─ manage-tasks.tsx
-│  │  ├─ manage-users.tsx
-│  │  ├─ my-tasks.tsx
-│  │  ├─ task-progress
-│  │  │  └─ [taskId].tsx
-│  │  ├─ update-task
-│  │  │  └─ [taskId].tsx
-│  │  └─ _layout.tsx
-│  ├─ index.tsx
-│  ├─ notifications.tsx
-│  ├─ profile.tsx
-│  ├─ tasks
-│  │  └─ [taskId]
-│  │     └─ update.tsx
-│  └─ _layout.tsx
-├─ app.json
-├─ assets
-│  ├─ animations
-│  │  └─ mascot.json
-│  ├─ fonts
-│  │  └─ SpaceMono-Regular.ttf
-│  └─ images
-│     ├─ adaptive-icon.png
-│     ├─ favicon.png
-│     ├─ icon.png
-│     ├─ partial-react-logo.png
-│     ├─ react-logo.png
-│     ├─ react-logo@2x.png
-│     ├─ react-logo@3x.png
-│     └─ splash-icon.png
-├─ babel.config.js
-├─ components
-│  ├─ CustomDrawer.tsx
-│  ├─ FloatingButton.tsx
-│  ├─ Graph.tsx
-│  ├─ NotificationBell.tsx
-│  ├─ TaskCard.tsx
-│  ├─ TaskFilterMenu.tsx
-│  ├─ TaskFilters.tsx
-│  ├─ TaskSortMenu.tsx
-│  ├─ TaskUpdateCard.tsx
-│  └─ UserAvatar.tsx
-├─ context
-│  ├─ AuthContext.tsx
-│  ├─ NotificationContext.tsx
-│  └─ ThemeContext.tsx
-├─ eslint.config.js
-├─ global.css
-├─ hooks
-│  ├─ useAuth.ts
-│  ├─ useFilteredSortedTasks.ts
-│  └─ useNotifications.ts
-├─ metro.config.js
-├─ nativewind-env.d.ts
-├─ navigation
-│  ├─ AppNavigator.tsx
-│  ├─ AuthNavigator.tsx
-│  ├─ DashboardTabsNavigator.tsx
-│  ├─ DrawerNavigator.tsx
-│  └─ navigationTypes.ts
-├─ package-lock.json
-├─ package.json
-├─ README.md
-├─ services
-│  ├─ authService.ts
-│  ├─ notificationService.ts
-│  └─ taskService.ts
-├─ tailwind.config.js
-├─ tsconfig.json
-├─ types
-│  ├─ index.d.ts
-│  ├─ index.ts
-│  ├─ notification.types.ts
-│  ├─ task.types.ts
-│  └─ user.types.ts
-└─ utils
-   ├─ constants.ts
-   ├─ downloadExcel.ts
-   ├─ formatDate.ts
-   └─ taskUtils.ts
-
-```
 ```
 task_react_native_live
 ├─ app
@@ -290,6 +102,103 @@ task_react_native_live
 │  ├─ TaskFilterMenu.tsx
 │  ├─ TaskFilters.tsx
 │  ├─ TaskSortMenu.tsx
+│  ├─ TaskUpdateCard.tsx
+│  └─ UserAvatar.tsx
+├─ context
+│  ├─ AuthContext.tsx
+│  ├─ NotificationContext.tsx
+│  └─ ThemeContext.tsx
+├─ eslint.config.js
+├─ global.css
+├─ hooks
+│  ├─ useAuth.ts
+│  ├─ useFilteredSortedTasks.ts
+│  └─ useNotifications.ts
+├─ metro.config.js
+├─ nativewind-env.d.ts
+├─ navigation
+│  ├─ AppNavigator.tsx
+│  ├─ AuthNavigator.tsx
+│  ├─ DashboardTabsNavigator.tsx
+│  ├─ DrawerNavigator.tsx
+│  └─ navigationTypes.ts
+├─ package-lock.json
+├─ package.json
+├─ README.md
+├─ services
+│  ├─ authService.ts
+│  ├─ notificationService.ts
+│  └─ taskService.ts
+├─ tailwind.config.js
+├─ tsconfig.json
+├─ types
+│  ├─ index.d.ts
+│  ├─ index.ts
+│  ├─ notification.types.ts
+│  ├─ task.types.ts
+│  └─ user.types.ts
+└─ utils
+   ├─ constants.ts
+   ├─ downloadExcel.ts
+   ├─ formatDate.ts
+   └─ taskUtils.ts
+
+```
+```
+task_react_native_1
+├─ app
+│  ├─ (auth)
+│  │  ├─ login.tsx
+│  │  ├─ signup.tsx
+│  │  └─ _layout.tsx
+│  ├─ (dashboard)
+│  │  ├─ about.tsx
+│  │  ├─ assigned-tasks.tsx
+│  │  ├─ create-task.tsx
+│  │  ├─ dashboard.tsx
+│  │  ├─ index.tsx
+│  │  ├─ manage-tasks.tsx
+│  │  ├─ manage-users.tsx
+│  │  ├─ my-tasks.tsx
+│  │  ├─ notifications.tsx
+│  │  ├─ profile.tsx
+│  │  ├─ settings.tsx
+│  │  ├─ task-progress
+│  │  │  └─ [taskId].tsx
+│  │  ├─ tasks
+│  │  │  └─ [taskId]
+│  │  │     └─ update.tsx
+│  │  ├─ update-task
+│  │  │  └─ [taskId].tsx
+│  │  └─ _layout.tsx
+│  ├─ index.tsx
+│  └─ _layout.tsx
+├─ app.json
+├─ assets
+│  ├─ animations
+│  │  └─ mascot.json
+│  ├─ fonts
+│  │  └─ SpaceMono-Regular.ttf
+│  └─ images
+│     ├─ adaptive-icon.png
+│     ├─ favicon.png
+│     ├─ icon.png
+│     ├─ partial-react-logo.png
+│     ├─ react-logo.png
+│     ├─ react-logo@2x.png
+│     ├─ react-logo@3x.png
+│     └─ splash-icon.png
+├─ babel.config.js
+├─ components
+│  ├─ CustomDrawer.tsx
+│  ├─ FloatingButton.tsx
+│  ├─ Graph.tsx
+│  ├─ NotificationBell.tsx
+│  ├─ TaskCard.tsx
+│  ├─ TaskFilterMenu.tsx
+│  ├─ TaskFilters.tsx
+│  ├─ TaskSortMenu.tsx
+│  ├─ TaskSortModal.tsx
 │  ├─ TaskUpdateCard.tsx
 │  └─ UserAvatar.tsx
 ├─ context

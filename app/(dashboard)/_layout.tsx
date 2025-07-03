@@ -138,7 +138,6 @@
 import BellWithNotification from '@/components/NotificationBell';
 import { useAuth } from '@/context/AuthContext';
 import { AntDesign, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import { Redirect, router, useRouter } from 'expo-router';
 import { Drawer } from 'expo-router/drawer';
@@ -159,10 +158,10 @@ export default function DashboardLayout() {
     return <Redirect href="/(auth)/login" />;
   }
 
-  const handleLogout = async () => {
-    await AsyncStorage.removeItem('token');
-    router.replace('/(auth)/login');
-  };
+  // const handleLogout = async () => {
+  //   await AsyncStorage.removeItem('token');
+  //   router.replace('/(auth)/login');
+  // };
 
   // const CustomDrawer = (props: any) => {
   //   const pathname = usePathname();
@@ -227,14 +226,22 @@ export default function DashboardLayout() {
   //   );
   // }
 
+  const { logout } = useAuth();
+
+  const handleLogout = async () => {
+    // await AsyncStorage.removeItem('token');
+    await logout();
+    router.replace('/(auth)/login');
+  };
+
   const CustomDrawer = (props: any) => {
     const router = useRouter();
     const { user } = useAuth();
 
-    const handleLogout = async () => {
-      await AsyncStorage.removeItem('token');
-      router.replace('/(auth)/login');
-    };
+    // const handleLogout = async () => {
+    //   await AsyncStorage.removeItem('token');
+    //   router.replace('/(auth)/login');
+    // };
 
     return (
       <DrawerContentScrollView {...props} className="bg-black">
@@ -349,7 +356,7 @@ export default function DashboardLayout() {
         }}
       />
 
-       <Drawer.Screen
+      <Drawer.Screen
         name="my-tasks"
         options={{
           drawerItemStyle: { display: 'none' }, // ✅ hides from drawer

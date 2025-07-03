@@ -130,21 +130,21 @@
 // }
 
 
-import React, { useState, useRef, useEffect } from "react";
+import { useAuth } from "@/hooks/useAuth";
+import { BASE_URL } from "@/utils/constants";
+import axios from "axios";
+import { router } from "expo-router";
+import { Eye, EyeOff } from "lucide-react-native";
+import React, { useEffect, useRef, useState } from "react";
 import {
-  View,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
   Text,
   TextInput,
   TouchableOpacity,
-  KeyboardAvoidingView,
-  Platform,
-  Alert,
+  View,
 } from "react-native";
-import { router } from "expo-router";
-import axios from "axios";
-import { useAuth } from "@/hooks/useAuth";
-import { Eye, EyeOff } from "lucide-react-native";
-import { BASE_URL } from "@/utils/constants";
 
 // 👇 Replace this with your real backend URL
 //const BASE_URL = "https://localhost:5000";
@@ -182,9 +182,16 @@ export default function LoginScreen() {
       });
 
       const { user, token } = res.data;
-
+      console.log("Befor login", user, token);
       await login(user, token);
-      router.replace("/(dashboard)");
+      console.log("After login", user, token);
+      // router.replace("/(dashboard)");
+      console.log("Token set:", token);
+      console.log("User set:", user);
+      // setTimeout(() => {
+      //   console.log("logging...........")
+      //   router.replace("/(dashboard)");
+      // }, 500);
     } catch (err: any) {
       Alert.alert("Login Failed", err.response?.data?.message || "Please check your credentials.");
     }

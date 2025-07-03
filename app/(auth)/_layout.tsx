@@ -23,8 +23,7 @@
 // File: app/(auth)/_layout.tsx
 import { Stack } from 'expo-router';
 import { useEffect } from 'react';
-import { BackHandler, Alert } from 'react-native';
-import { AuthProvider } from '@/context/AuthContext'; // ✅ Import AuthProvider
+import { Alert, BackHandler } from 'react-native';
 
 export default function AuthLayout() {
   useEffect(() => {
@@ -40,8 +39,9 @@ export default function AuthLayout() {
   }, []);
 
   return (
-    <AuthProvider>
-      <Stack screenOptions={{ headerShown: false }} />
-    </AuthProvider>
+    // <AuthProvider>
+      
+    // </AuthProvider>
+    <Stack screenOptions={{ headerShown: false }} />
   );
 }

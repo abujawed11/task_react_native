@@ -212,6 +212,74 @@
 
 // app/_layout.tsx
 // app/_layout.tsx
+// import { AuthProvider } from '@/context/AuthContext';
+// import { NotificationProvider } from '@/context/NotificationContext';
+// import { Slot } from 'expo-router';
+// import { GestureHandlerRootView } from 'react-native-gesture-handler';
+// import '../global.css';
+
+// export default function RootLayout() {
+//   return (
+//     <GestureHandlerRootView style={{ flex: 1 }}>
+//       <AuthProvider>
+//         <NotificationProvider>
+//           <Slot />
+//         </NotificationProvider>
+//       </AuthProvider>
+//     </GestureHandlerRootView>
+//   );
+// }
+
+// import { AuthProvider } from '@/context/AuthContext';
+// import { Slot } from 'expo-router';
+// import '../global.css';
+
+// export default function RootLayout() {
+//   return (
+//     <AuthProvider>
+//       <Slot />
+//     </AuthProvider>
+//   );
+// }
+
+
+// app/_layout.tsx
+// import { AuthProvider, useAuth } from '@/context/AuthContext';
+// import { NotificationProvider } from '@/context/NotificationContext';
+// import { Slot } from 'expo-router';
+// import { ActivityIndicator, View } from 'react-native';
+// import { GestureHandlerRootView } from 'react-native-gesture-handler';
+// import '../global.css';
+
+// function AppContent() {
+//   const { loading } = useAuth();
+
+//   if (loading) {
+//     // ✅ While checking token, delay rendering route
+//     return (
+//       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+//         <ActivityIndicator size="large" color="#facc15" />
+//       </View>
+//     );
+//   }
+
+//   return <Slot />;
+// }
+
+// export default function RootLayout() {
+//   return (
+//     <GestureHandlerRootView style={{ flex: 1 }}>
+//       <AuthProvider>
+//         <NotificationProvider>
+//           <AppContent />
+//         </NotificationProvider>
+//       </AuthProvider>
+//     </GestureHandlerRootView>
+//   );
+// }
+
+
+// app/_layout.tsx
 import { AuthProvider } from '@/context/AuthContext';
 import { NotificationProvider } from '@/context/NotificationContext';
 import { Slot } from 'expo-router';
@@ -229,18 +297,6 @@ export default function RootLayout() {
     </GestureHandlerRootView>
   );
 }
-
-// import { AuthProvider } from '@/context/AuthContext';
-// import { Slot } from 'expo-router';
-// import '../global.css';
-
-// export default function RootLayout() {
-//   return (
-//     <AuthProvider>
-//       <Slot />
-//     </AuthProvider>
-//   );
-// }
 
 
 

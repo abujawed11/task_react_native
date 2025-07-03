@@ -1,16 +1,19 @@
 // components/CustomDrawer.tsx
+import { useAuth } from '@/context/AuthContext';
 import { Entypo } from '@expo/vector-icons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 
+
 export default function CustomDrawer(props: any) {
   const router = useRouter();
+  const { logout } = useAuth();
 
   const handleLogout = async () => {
-    await AsyncStorage.removeItem('token');
+    // await AsyncStorage.removeItem('token');
+    await logout();
     router.replace('/(auth)/login');
   };
 

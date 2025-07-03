@@ -309,15 +309,17 @@ export default function Dashboard() {
     completed: 0,
   });
 
-  const handleLogout = async () => {
-    await AsyncStorage.removeItem('token');
-    router.replace('/(auth)/login');
-  };
+  // const handleLogout = async () => {
+  //   await AsyncStorage.removeItem('token');
+  //   router.replace('/(auth)/login');
+  // };
 
   useEffect(() => {
     const fetchDashboardStats = async () => {
       try {
         const token = await AsyncStorage.getItem('token');
+        await AsyncStorage.getItem('user'); // Ensure user is loaded
+        console.log(user)
         const res = await axios.get(`${BASE_URL}/api/tasks/dashboard`, {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -328,7 +330,7 @@ export default function Dashboard() {
     };
 
     fetchDashboardStats();
-  }, []);
+  }, [user]);
 
   return (
     <View className="flex-1 bg-yellow-100">
