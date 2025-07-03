@@ -1007,6 +1007,8 @@ import TaskSortModal from '@/components/TaskSortModal';
 import { useAuth } from '@/hooks/useAuth';
 import { Task, TaskFilters } from '@/types/task.types';
 import { BASE_URL } from '@/utils/constants';
+import { downloadTaskExcel } from '@/utils/downloadExcel';
+import { FontAwesome5 } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { Funnel, SortAsc } from 'lucide-react-native';
@@ -1127,14 +1129,45 @@ const MyTasksScreen = () => {
   return (
     <View className="flex-1 bg-yellow-100" style={{ paddingTop: insets.top }}>
       {/* Header */}
-      <View className="flex-row justify-between items-center px-4 pt-2 pb-2 bg-yellow-100">
+      {/* <View className="flex-row justify-between items-center px-4 pt-2 pb-2 bg-yellow-100">
+        <TouchableOpacity onPress={() => downloadTaskExcel({
+          baseUrl: BASE_URL, mode: 'my', // or 'assigned' | 'created'
+          username: user?.username,
+        })}>
+          <FontAwesome5 name="download" size={24} color="black" />
+        </TouchableOpacity>
         <TouchableOpacity onPress={() => setShowFilter(true)}>
           <Funnel size={24} color="black" />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => setShowSort(true)}>
           <SortAsc size={24} color="black" />
         </TouchableOpacity>
+      </View> */}
+      <View className="flex-row justify-between items-center px-4 pt-2 pb-2 bg-yellow-100">
+        {/* Left Side - Filter + Sort */}
+        <View className="flex-row items-center">
+          <TouchableOpacity onPress={() => setShowFilter(true)}>
+            <Funnel size={24} color="black" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => setShowSort(true)} className="ml-3">
+            <SortAsc size={24} color="black" />
+          </TouchableOpacity>
+        </View>
+
+        {/* Right Side - Download */}
+        <TouchableOpacity
+          onPress={() =>
+            downloadTaskExcel({
+              baseUrl: BASE_URL,
+              mode: 'my', // or 'assigned' | 'created'
+              username: user?.username,
+            })
+          }
+        >
+          <FontAwesome5 name="download" size={24} color="black" />
+        </TouchableOpacity>
       </View>
+
 
       {/* Task List */}
       <ScrollView

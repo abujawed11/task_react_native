@@ -173,7 +173,7 @@ const TaskProgress = () => {
 
     return (
         <ScrollView className="flex-1 bg-yellow-50 p-4">
-            <Button title="← Back" color="black" onPress={() => router.back()} />
+            {/* <Button title="← Back" color="black" onPress={() => router.back()} /> */}
 
             <Text className="text-center text-2xl font-bold text-black mt-4 mb-6">Task Progress</Text>
 

@@ -1,12 +1,12 @@
 import { Picker } from '@react-native-picker/picker';
-import { ArrowDownUp, RefreshCcw } from 'lucide-react-native';
+import { ArrowDownUp, RefreshCcw, X } from 'lucide-react-native';
 import React from 'react';
 import {
-    Modal,
-    ScrollView,
-    Text,
-    TouchableOpacity,
-    View
+  Modal,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View
 } from 'react-native';
 
 type SortConfig = {
@@ -40,7 +40,8 @@ const TaskSortModal: React.FC<Props> = ({
         <View className="flex-row justify-between items-center px-4 py-3 border-b border-gray-300">
           <Text className="text-lg font-bold text-black">Sort Tasks</Text>
           <TouchableOpacity onPress={onClose}>
-            <Text className="text-sm text-red-600 font-semibold">Close</Text>
+            {/* <Text className="text-sm text-red-600 font-semibold">Close</Text> */}
+             <X size={22} color="red" />
           </TouchableOpacity>
         </View>
 

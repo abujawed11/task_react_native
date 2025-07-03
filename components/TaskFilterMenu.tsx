@@ -561,7 +561,7 @@ const TaskFilterModal: React.FC<Props> = ({
             <Text className="text-black font-bold text-lg">Filter Tasks</Text>
           </View>
           <TouchableOpacity onPress={onClose}>
-            <X size={22} color="black" />
+            <X size={22} color="red" />
           </TouchableOpacity>
         </View>
 

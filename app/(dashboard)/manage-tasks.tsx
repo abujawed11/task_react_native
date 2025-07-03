@@ -487,10 +487,12 @@ import TaskSortModal from '@/components/TaskSortModal';
 import { useAuth } from '@/hooks/useAuth';
 import { Task, TaskFilters } from '@/types/task.types';
 import { BASE_URL } from '@/utils/constants';
+import { downloadTaskExcel } from '@/utils/downloadExcel';
+import { FontAwesome5 } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { useRouter } from 'expo-router';
-import { ArrowLeft, Download, Funnel, SortAsc } from 'lucide-react-native';
+import { Funnel, SortAsc } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
@@ -611,7 +613,7 @@ export default function ManageAllTasksScreen() {
 
   return (
     <View className="flex-1 bg-yellow-50">
-      <View className="flex-row justify-between items-center px-4 py-3 bg-yellow-200">
+      {/* <View className="flex-row justify-between items-center px-4 py-3 bg-yellow-200">
         <TouchableOpacity onPress={() => router.back()} className="flex-row items-center">
           <ArrowLeft size={20} color="#000" />
           <Text className="ml-2 text-black font-semibold">Back</Text>
@@ -622,17 +624,42 @@ export default function ManageAllTasksScreen() {
         <TouchableOpacity onPress={() => Alert.alert('Download', 'Excel download placeholder')}>
           <Download size={22} color="black" />
         </TouchableOpacity>
+      </View> */}
+
+      <View className="flex-row justify-between items-center px-4 pt-2 pb-2 bg-yellow-100">
+        {/* Left Side - Filter + Sort */}
+        <View className="flex-row items-center">
+          <TouchableOpacity onPress={() => setShowFilter(true)}>
+            <Funnel size={24} color="black" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => setShowSort(true)} className="ml-3">
+            <SortAsc size={24} color="black" />
+          </TouchableOpacity>
+        </View>
+
+        {/* Right Side - Download */}
+        <TouchableOpacity
+          onPress={() =>
+            downloadTaskExcel({
+              baseUrl: BASE_URL,
+              mode: 'all', // or 'assigned' | 'created'
+              username: user?.username,
+            })
+          }
+        >
+          <FontAwesome5 name="download" size={24} color="black" />
+        </TouchableOpacity>
       </View>
 
       {/* Filter/Sort Header */}
-      <View className="flex-row justify-between items-center px-4 pt-2 pb-2 bg-yellow-50">
+      {/* <View className="flex-row justify-between items-center px-4 pt-2 pb-2 bg-yellow-50">
         <TouchableOpacity onPress={() => setShowFilter(true)}>
           <Funnel size={24} color="black" />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => setShowSort(true)}>
           <SortAsc size={24} color="black" />
         </TouchableOpacity>
-      </View>
+      </View> */}
 
       {loading ? (
         <View className="flex-1 justify-center items-center">

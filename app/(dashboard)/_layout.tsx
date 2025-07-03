@@ -302,12 +302,69 @@ export default function DashboardLayout() {
         name="index"
         options={{
           drawerItemStyle: { display: 'none' }, // ✅ hides from drawer
-          headerRight: () => ( <BellWithNotification/>),
+          headerRight: () => (<BellWithNotification />),
           title: 'Dashboard', // ✅ replaces "index" in app bar
           drawerLabel: 'Dashboard', // ✅ replaces "index" in drawer label
         }}
       />
+
+      <Drawer.Screen
+        name="manage-tasks"
+        options={{
+          drawerItemStyle: { display: 'none' }, // ✅ hides from drawer
+          headerRight: () => (<BellWithNotification />),
+          title: 'All Task', // ✅ replaces "index" in app bar
+          drawerLabel: 'All Task', // ✅ replaces "index" in drawer label
+        }}
+      />
+
+      <Drawer.Screen
+        name="create-task"
+        options={{
+          drawerItemStyle: { display: 'none' }, // ✅ hides from drawer
+          headerRight: () => (<BellWithNotification />),
+          title: 'Create Task', // ✅ replaces "index" in app bar
+          drawerLabel: 'Create Task', // ✅ replaces "index" in drawer label
+        }}
+      />
+
+      <Drawer.Screen
+        name="task-progress/[taskId]"
+        options={{
+          drawerItemStyle: { display: 'none' }, // ✅ hides from drawer
+          headerRight: () => (<BellWithNotification />),
+          title: 'Task Progress', // ✅ replaces "index" in app bar
+          drawerLabel: 'Task Progress', // ✅ replaces "index" in drawer label
+        }}
+      />
+
+      <Drawer.Screen
+        name="tasks/[taskId]/update"
+        options={{
+          drawerItemStyle: { display: 'none' }, // ✅ hides from drawer
+          headerRight: () => (<BellWithNotification />),
+          title: 'Update Task', // ✅ replaces "index" in app bar
+          drawerLabel: 'Update Task', // ✅ replaces "index" in drawer label
+        }}
+      />
+
+       <Drawer.Screen
+        name="my-tasks"
+        options={{
+          drawerItemStyle: { display: 'none' }, // ✅ hides from drawer
+          headerRight: () => (<BellWithNotification />),
+          title: 'My Tasks', // ✅ replaces "index" in app bar
+          drawerLabel: 'Update Task', // ✅ replaces "index" in drawer label
+        }}
+      />
+
+
+
     </Drawer>
+
+
+
+
     // <Drawer
     //   drawerContent={(props) => <CustomDrawer {...props} />}
     //   screenOptions={{
