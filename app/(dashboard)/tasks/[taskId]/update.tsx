@@ -318,12 +318,13 @@ import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
+import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import { Audio } from 'expo-av';
 import * as DocumentPicker from 'expo-document-picker';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, KeyboardAvoidingView, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 export default function UpdateTaskScreen() {
     const { taskId, from } = useLocalSearchParams<{ taskId: string; from?: string }>();
@@ -348,6 +349,7 @@ export default function UpdateTaskScreen() {
     const [file, setFile] = useState<DocumentPicker.DocumentPickerAsset | null>(null);
     const [loading, setLoading] = useState(true);
     const [showDatePicker, setShowDatePicker] = useState(false);
+    const navigation = useNavigation();
 
     useEffect(() => {
         if (!sound) return;
@@ -362,7 +364,7 @@ export default function UpdateTaskScreen() {
     useEffect(() => {
         fetchTask();
         fetchUsers();
-    }, [taskId]);
+    }, [taskId, BASE_URL]);
 
     const fetchTask = async () => {
         try {
@@ -515,8 +517,17 @@ export default function UpdateTaskScreen() {
             setIsPlaying(false);
 
 
-            router.push('/(dashboard)');
+            // router.push('/(dashboard)');
             // router.replace(`/(dashboard)/${from || '/(dashboard)'}` as any);
+            // router.push({
+            //     pathname: '/(dashboard)',
+            //     params: { refresh: 'true' },
+            // });
+
+            // navigation.navigate('My Tasks');
+            router.push({
+                pathname: '/(dashboard)',
+            });
 
 
         } catch {
@@ -530,67 +541,95 @@ export default function UpdateTaskScreen() {
     const isAssignee = user?.username === task.assigned_to;
 
     return (
-        <ScrollView className="bg-yellow-100 min-h-screen p-4">
-            <Text className="text-3xl font-bold text-center text-black mb-4">Update Task</Text>
 
-            {isCreator && (
-                <>
-                    <TextInput value={title} onChangeText={setTitle} placeholder="Title" className="bg-white p-4 rounded-xl border border-gray-300 mb-4 text-base" />
-                    <TextInput value={description} onChangeText={setDescription} placeholder="Description" multiline numberOfLines={4} className="bg-white p-4 rounded-xl border border-gray-300 mb-4 text-base" />
+        // <KeyboardAvoidingView
+        //     behavior={Platform.OS === 'ios' ? 'padding' : "height"}
+        //     className="flex-1"
+        //     keyboardVerticalOffset={100} // adjust based on your layout
+        // >
 
-                    <TouchableOpacity
-                        onPress={() => setShowDatePicker(true)}
-                        className="flex-row items-center bg-white p-4 rounded-xl border border-gray-300 mb-4"
-                        activeOpacity={0.8}
-                    >
-                        <Text className={`flex-1 text-base ${dueDate ? 'text-gray-700' : 'text-gray-400'}`}>{dueDate ? new Date(dueDate).toLocaleDateString() : 'dd-mm-yyyy'}</Text>
-                        <Ionicons name="calendar-outline" size={20} color="gray" />
-                    </TouchableOpacity>
+        //     <ScrollView
+        //         contentContainerStyle={{ padding: 16, flexGrow: 1 }}
+        //         keyboardShouldPersistTaps="handled"
+        //         className="bg-yellow-100"
+        //     >
+        <View style={{ flex: 1, backgroundColor: '#FFF8DC' }}>
+            <KeyboardAvoidingView
+                style={{ flex: 1 }}
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0} // tweak if you have a header
+            >
+                <ScrollView
+                    contentContainerStyle={{
+                        padding: 20,
+                        paddingBottom: 120, // ensure space when keyboard opens
+                        flexGrow: 1,
+                        justifyContent: 'flex-start',
+                    }}
+                    keyboardShouldPersistTaps="handled"
+                    showsVerticalScrollIndicator={false}
+                >
+                    {/* <ScrollView className="bg-yellow-100 min-h-screen p-4"> */}
+                    {/* <Text className="text-3xl font-bold text-center text-black mb-4">Update Task</Text> */}
 
-                    {showDatePicker && (
-                        <DateTimePicker
-                            value={dueDate ? new Date(dueDate) : new Date()}
-                            mode="date"
-                            display="default"
-                            onChange={(e, selectedDate) => {
-                                setShowDatePicker(false);
-                                if (selectedDate) setDueDate(selectedDate.toISOString().split('T')[0]);
-                            }}
-                        />
+                    {isCreator && (
+                        <>
+                            <TextInput value={title} onChangeText={setTitle} placeholder="Title" className="bg-white p-4 rounded-xl border border-gray-300 mb-4 text-base" />
+                            <TextInput value={description} onChangeText={setDescription} placeholder="Description" multiline numberOfLines={4} className="bg-white p-4 rounded-xl border border-gray-300 mb-4 text-base" />
+
+                            <TouchableOpacity
+                                onPress={() => setShowDatePicker(true)}
+                                className="flex-row items-center bg-white p-4 rounded-xl border border-gray-300 mb-4"
+                                activeOpacity={0.8}
+                            >
+                                <Text className={`flex-1 text-base ${dueDate ? 'text-gray-700' : 'text-gray-400'}`}>{dueDate ? new Date(dueDate).toLocaleDateString() : 'dd-mm-yyyy'}</Text>
+                                <Ionicons name="calendar-outline" size={20} color="gray" />
+                            </TouchableOpacity>
+
+                            {showDatePicker && (
+                                <DateTimePicker
+                                    value={dueDate ? new Date(dueDate) : new Date()}
+                                    mode="date"
+                                    display="default"
+                                    onChange={(e, selectedDate) => {
+                                        setShowDatePicker(false);
+                                        if (selectedDate) setDueDate(selectedDate.toISOString().split('T')[0]);
+                                    }}
+                                />
+                            )}
+
+                            <View className="bg-white rounded-xl border border-gray-300 mb-4">
+                                <Picker selectedValue={priority} onValueChange={(val) => setPriority(val)}>
+                                    <Picker.Item label="Select Priority" value="" />
+                                    <Picker.Item label="Low" value="Low" />
+                                    <Picker.Item label="Medium" value="Medium" />
+                                    <Picker.Item label="High" value="High" />
+                                </Picker>
+                            </View>
+
+                            <View className="bg-white rounded-xl border border-gray-300 mb-4">
+                                <Picker selectedValue={assignedTo} onValueChange={(val) => setAssignedTo(val)}>
+                                    <Picker.Item label="Assign To" value="" />
+                                    {users.filter((u) => u !== task?.created_by).map((u, idx) => (
+                                        <Picker.Item label={u} value={u} key={idx} />
+                                    ))}
+                                </Picker>
+                            </View>
+                        </>
                     )}
 
-                    <View className="bg-white rounded-xl border border-gray-300 mb-4">
-                        <Picker selectedValue={priority} onValueChange={(val) => setPriority(val)}>
-                            <Picker.Item label="Select Priority" value="" />
-                            <Picker.Item label="Low" value="Low" />
-                            <Picker.Item label="Medium" value="Medium" />
-                            <Picker.Item label="High" value="High" />
-                        </Picker>
-                    </View>
+                    {isAssignee && (
+                        <View className="bg-white rounded-xl border border-gray-300 mb-4">
+                            <Picker selectedValue={status} onValueChange={(val) => setStatus(val)}>
+                                <Picker.Item label="Select Status" value="" />
+                                <Picker.Item label="Pending" value="Pending" />
+                                <Picker.Item label="In Progress" value="In Progress" />
+                                <Picker.Item label="Completed" value="Completed" />
+                            </Picker>
+                        </View>
+                    )}
 
-                    <View className="bg-white rounded-xl border border-gray-300 mb-4">
-                        <Picker selectedValue={assignedTo} onValueChange={(val) => setAssignedTo(val)}>
-                            <Picker.Item label="Assign To" value="" />
-                            {users.filter((u) => u !== task?.created_by).map((u, idx) => (
-                                <Picker.Item label={u} value={u} key={idx} />
-                            ))}
-                        </Picker>
-                    </View>
-                </>
-            )}
-
-            {isAssignee && (
-                <View className="bg-white rounded-xl border border-gray-300 mb-4">
-                    <Picker selectedValue={status} onValueChange={(val) => setStatus(val)}>
-                        <Picker.Item label="Select Status" value="" />
-                        <Picker.Item label="Pending" value="Pending" />
-                        <Picker.Item label="In Progress" value="In Progress" />
-                        <Picker.Item label="Completed" value="Completed" />
-                    </Picker>
-                </View>
-            )}
-
-            {/* <TextInput
+                    {/* <TextInput
                 value={comment}
                 onChangeText={setComment}
                 placeholder="Comment"
@@ -598,50 +637,52 @@ export default function UpdateTaskScreen() {
                 numberOfLines={3}
                 className="bg-white p-4 rounded-xl border border-gray-300 mb-4 text-base"
             /> */}
-            <TextInput
-                value={comment}
-                onChangeText={setComment}
-                placeholder="Comment"
-                multiline
-                numberOfLines={3}
-                className="bg-white p-4 rounded-xl border border-gray-300 mb-4 text-base h-32"
-            />
+                    <TextInput
+                        value={comment}
+                        onChangeText={setComment}
+                        placeholder="Comment"
+                        multiline
+                        numberOfLines={3}
+                        className="bg-white p-4 rounded-xl border border-gray-300 mb-4 text-base h-32"
+                    />
 
-            <View className="mb-4">
-                <TouchableOpacity
-                    onPress={handleAudioRecord}
-                    className={`p-4 rounded-xl active:opacity-80 ${isRecording ? 'bg-red-600' : 'bg-black'}`}
-                >
-                    <Text className="text-yellow-400 font-bold text-center">
-                        {isRecording ? 'Stop Recording' : 'Record Audio'}
-                    </Text>
-                </TouchableOpacity>
-
-                {audioUri && (
-                    <View className="flex-row justify-between items-center mt-2 bg-white p-3 rounded-lg border border-gray-300">
-                        <Text className="text-black flex-1" numberOfLines={1}>Audio Recorded</Text>
+                    <View className="mb-4">
                         <TouchableOpacity
-                            onPress={isPlaying ? handleStopAudio : handlePlayAudio}
-                            className="mr-2"
-                            disabled={isPlaying && !sound}
+                            onPress={handleAudioRecord}
+                            className={`p-4 rounded-xl active:opacity-80 ${isRecording ? 'bg-red-600' : 'bg-black'}`}
                         >
-                            <Ionicons name={isPlaying ? 'pause' : 'play'} size={24} color="#22c55e" />
+                            <Text className="text-yellow-400 font-bold text-center">
+                                {isRecording ? 'Stop Recording' : 'Record Audio'}
+                            </Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={handleDeleteAudio}>
-                            <Ionicons name="trash" size={24} color="red" />
-                        </TouchableOpacity>
+
+                        {audioUri && (
+                            <View className="flex-row justify-between items-center mt-2 bg-white p-3 rounded-lg border border-gray-300">
+                                <Text className="text-black flex-1" numberOfLines={1}>Audio Recorded</Text>
+                                <TouchableOpacity
+                                    onPress={isPlaying ? handleStopAudio : handlePlayAudio}
+                                    className="mr-2"
+                                    disabled={isPlaying && !sound}
+                                >
+                                    <Ionicons name={isPlaying ? 'pause' : 'play'} size={24} color="#22c55e" />
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={handleDeleteAudio}>
+                                    <Ionicons name="trash" size={24} color="red" />
+                                </TouchableOpacity>
+                            </View>
+                        )}
                     </View>
-                )}
-            </View>
 
-            <TouchableOpacity onPress={pickFile} className="bg-black p-4 rounded-xl mb-4 active:opacity-80">
-                <Text className="text-yellow-400 font-bold text-center">Attach File</Text>
-            </TouchableOpacity>
-            {file && <Text className="text-black mb-2">Selected: {file.name}</Text>}
+                    <TouchableOpacity onPress={pickFile} className="bg-black p-4 rounded-xl mb-4 active:opacity-80">
+                        <Text className="text-yellow-400 font-bold text-center">Attach File</Text>
+                    </TouchableOpacity>
+                    {file && <Text className="text-black mb-2">Selected: {file.name}</Text>}
 
-            <TouchableOpacity onPress={handleUpdate} className="bg-yellow-500 p-4 rounded-xl active:opacity-80">
-                <Text className="text-black font-bold text-center text-base">Update Task</Text>
-            </TouchableOpacity>
-        </ScrollView>
+                    <TouchableOpacity onPress={handleUpdate} className="bg-yellow-500 p-4 rounded-xl active:opacity-80">
+                        <Text className="text-black font-bold text-center text-base">Update Task</Text>
+                    </TouchableOpacity>
+                </ScrollView>
+            </KeyboardAvoidingView>
+        </View>
     );
 }

@@ -267,6 +267,12 @@ const AssignedTasksScreen: React.FC = () => {
     if (user) fetchTasks();
   }, [user]);
 
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     if (user) fetchTasks();
+  //   }, [user])
+  // );
+
   useEffect(() => {
     let filtered = [...tasks];
 
@@ -324,7 +330,7 @@ const AssignedTasksScreen: React.FC = () => {
   };
 
   return (
-    <View className="flex-1 bg-yellow-100" style={{ paddingTop: insets.top }}>
+    <View className="flex-1 bg-yellow-100">
       {/* Header with filter/sort */}
       {/* <View className="flex-row justify-between items-center px-4 pt-2 pb-2 bg-yellow-100">
         <TouchableOpacity onPress={() => setShowFilter(true)}>

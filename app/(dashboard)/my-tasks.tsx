@@ -1011,6 +1011,7 @@ import { downloadTaskExcel } from '@/utils/downloadExcel';
 import { FontAwesome5 } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Funnel, SortAsc } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
 import {
@@ -1023,7 +1024,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const MyTasksScreen = () => {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const insets = useSafeAreaInsets();
 
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -1033,6 +1034,9 @@ const MyTasksScreen = () => {
   const [showFilter, setShowFilter] = useState(false);
   const [showSort, setShowSort] = useState(false);
   const [users, setUsers] = useState([]);
+  const params = useLocalSearchParams();
+  const router = useRouter();
+
 
   const [filters, setFilters] = useState<TaskFilters>({
     assigned_to: '',
@@ -1052,6 +1056,7 @@ const MyTasksScreen = () => {
 
   const fetchTasks = async () => {
     try {
+      console.log("Intial Task Fetch")
       const token = await AsyncStorage.getItem('token');
       const response = await axios.get(`${BASE_URL}/api/tasks/assigned`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -1066,9 +1071,26 @@ const MyTasksScreen = () => {
     }
   };
 
+  // useEffect(() => {
+  //   if (params.refresh === 'true') {
+
+  //     fetchTasks(); // ✅ refetch updated task list
+  //     console.log("Task Fetched")
+
+  //     // 👇 Clear the param so it doesn't refetch again on next mount
+  //     router.setParams({ refresh: undefined });
+  //   }
+  // }, [params.refresh]);
+
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     if (user) fetchTasks();
+  //   }, [user])
+  // );
+
   useEffect(() => {
     if (user) fetchTasks();
-  }, [user]);
+  }, [user, BASE_URL, loading]);
 
   useEffect(() => {
     let filtered = [...tasks];
@@ -1127,7 +1149,7 @@ const MyTasksScreen = () => {
   };
 
   return (
-    <View className="flex-1 bg-yellow-100" style={{ paddingTop: insets.top }}>
+    <View className="flex-1 bg-yellow-100" >
       {/* Header */}
       {/* <View className="flex-row justify-between items-center px-4 pt-2 pb-2 bg-yellow-100">
         <TouchableOpacity onPress={() => downloadTaskExcel({

@@ -1245,7 +1245,7 @@ const CreateTaskScreen: React.FC = () => {
   return (
     <ScrollView className="bg-yellow-100 min-h-screen p-4">
       <View className="flex-1 w-full max-w-md mx-auto">
-        <Text className="text-3xl font-bold text-black mb-6 text-center">Create Task</Text>
+        {/* <Text className="text-3xl font-bold text-black mb-6 text-center">Create Task</Text> */}
 
         <TextInput
           placeholder="Title"

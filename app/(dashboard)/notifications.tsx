@@ -50,13 +50,13 @@ const NotificationScreen = () => {
   return (
     <ScrollView className="flex-1 bg-yellow-100 px-4 pt-6 pb-10">
       <View className="flex-row justify-between items-center mb-6">
-        <TouchableOpacity
+        {/* <TouchableOpacity
           onPress={() => router.back()}
           className="bg-black px-4 py-2 rounded-lg"
         >
           <Text className="text-yellow-400 font-bold text-sm">← Back</Text>
-        </TouchableOpacity>
-        <Text className="text-xl font-bold text-black">All Notifications</Text>
+        </TouchableOpacity> */}
+        {/* <Text className="text-xl font-bold text-black">All Notifications</Text> */}
         <View className="w-16" />
       </View>
 

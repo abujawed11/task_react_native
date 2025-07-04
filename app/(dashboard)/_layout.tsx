@@ -139,12 +139,23 @@ import BellWithNotification from '@/components/NotificationBell';
 import { useAuth } from '@/context/AuthContext';
 import { AntDesign, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
+import * as NavigationBar from 'expo-navigation-bar';
 import { Redirect, router, useRouter } from 'expo-router';
 import { Drawer } from 'expo-router/drawer';
-import { ActivityIndicator, Text, View } from 'react-native';
+import { useEffect } from 'react';
+import { ActivityIndicator, Platform, Text, View } from 'react-native';
 
 export default function DashboardLayout() {
   const { user, loading } = useAuth();
+
+
+  // 👇 Hide Android Navigation Bar with swipe to reveal
+  useEffect(() => {
+    if (Platform.OS === 'android') {
+      NavigationBar.setVisibilityAsync('hidden');
+      NavigationBar.setBehaviorAsync('overlay-swipe');
+    }
+  }, []);
 
   if (loading) {
     return (
@@ -362,7 +373,17 @@ export default function DashboardLayout() {
           drawerItemStyle: { display: 'none' }, // ✅ hides from drawer
           headerRight: () => (<BellWithNotification />),
           title: 'My Tasks', // ✅ replaces "index" in app bar
-          drawerLabel: 'Update Task', // ✅ replaces "index" in drawer label
+          drawerLabel: 'My Tasks', // ✅ replaces "index" in drawer label
+        }}
+      />
+
+      <Drawer.Screen
+        name="notifications"
+        options={{
+          drawerItemStyle: { display: 'none' }, // ✅ hides from drawer
+          headerRight: () => (<BellWithNotification />),
+          title: 'Notifications', // ✅ replaces "index" in app bar
+          drawerLabel: 'Notifications', // ✅ replaces "index" in drawer label
         }}
       />
 

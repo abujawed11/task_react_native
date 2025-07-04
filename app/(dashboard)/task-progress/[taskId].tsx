@@ -160,7 +160,7 @@ const TaskProgress = () => {
         } else {
             console.warn('No taskId found from route params!'); // ✅ Additional guard
         }
-    }, [taskId]);
+    }, [taskId,BASE_URL]);
 
 
     if (loading) {
@@ -175,7 +175,7 @@ const TaskProgress = () => {
         <ScrollView className="flex-1 bg-yellow-50 p-4">
             {/* <Button title="← Back" color="black" onPress={() => router.back()} /> */}
 
-            <Text className="text-center text-2xl font-bold text-black mt-4 mb-6">Task Progress</Text>
+            {/* <Text className="text-center text-2xl font-bold text-black mt-4 mb-6">Task Progress</Text> */}
 
             {task && (
                 <View className="mb-6 border-l-4 border-yellow-500 pl-4">
