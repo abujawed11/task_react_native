@@ -395,6 +395,7 @@ const AssignedTasksScreen: React.FC = () => {
       <TaskSortModal
         onSortClick={() => {
           setSortConfig({ ...sortConfig });
+          setShowSort(false); // 👈 closes modal after sort
         }}
         visible={showSort}
         onClose={() => setShowSort(false)}
