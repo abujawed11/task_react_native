@@ -1,7 +1,7 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { CalendarIcon, FileText, UserIcon } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, Button, Image, Linking, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, Button, Image, Linking, ScrollView, Text, TouchableOpacity, View, useColorScheme } from 'react-native';
 // import { getStatusIcon, getPriorityIcon, formatDate } from '@/utils/taskUtils';
 import TaskUpdateCard from '@/components/TaskUpdateCard';
 import { Task, TaskUpdate } from '@/types/task.types';
@@ -20,6 +20,7 @@ const TaskProgress = () => {
     const [task, setTask] = useState<Task | null>(null);
     const [updates, setUpdates] = useState<TaskUpdate[]>([]);
     const [loading, setLoading] = useState(true);
+    const colorScheme = useColorScheme();
 
         const [sound, setSound] = useState<Audio.Sound | null>(null);
         const [isPlaying, setIsPlaying] = useState(false);
@@ -189,27 +190,27 @@ const TaskProgress = () => {
 
                             <View className="flex-row items-center space-x-2">
                                 <UserIcon size={16} color="#3b82f6" />
-                                <Text>Created By: {task.created_by}</Text>
+                                <Text style={{ color: colorScheme === 'dark' ? '#000' : '#000' }}>Created By: {task.created_by}</Text>
                             </View>
                             <View className="flex-row items-center space-x-2">
                                 <UserIcon size={16} color="#3b82f6" />
-                                <Text>Assigned To: {task.assigned_to}</Text>
+                                <Text style={{ color: colorScheme === 'dark' ? '#000' : '#000' }}>Assigned To: {task.assigned_to}</Text>
                             </View>
                             <View className="flex-row items-center space-x-2">
                                 {getStatusIcon(task.status)}
-                                <Text>Status: {task.status}</Text>
+                                <Text style={{ color: colorScheme === 'dark' ? '#000' : '#000' }}>Status: {task.status}</Text>
                             </View>
                             <View className="flex-row items-center space-x-2">
                                 {getPriorityIcon(task.priority)}
-                                <Text>Priority: {task.priority}</Text>
+                                <Text style={{ color: colorScheme === 'dark' ? '#000' : '#000' }}>Priority: {task.priority}</Text>
                             </View>
                             <View className="flex-row items-center space-x-2">
                                 <CalendarIcon size={16} color="#3b82f6" />
-                                <Text>Due: {formatDate(task.due_date)}</Text>
+                                <Text style={{ color: colorScheme === 'dark' ? '#000' : '#000' }}>Due: {formatDate(task.due_date)}</Text>
                             </View>
                             <View className="flex-row items-center space-x-2">
                                 <CalendarIcon size={16} color="#3b82f6" />
-                                <Text>Created: {formatDate(task.created_at)}</Text>
+                                <Text style={{ color: colorScheme === 'dark' ? '#000' : '#000' }}>Created: {formatDate(task.created_at)}</Text>
                             </View>
 
                             {task.audio_path && (

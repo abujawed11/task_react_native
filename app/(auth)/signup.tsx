@@ -13,6 +13,7 @@ import {
     TextInput,
     TouchableOpacity,
     View,
+    useColorScheme
 } from "react-native";
 
 type FormFields = {
@@ -43,6 +44,7 @@ export default function SignupScreen() {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState<Partial<Record<keyof FormFields | "otp" | "inviteCode", string>>>({});
+    const colorScheme = useColorScheme();
 
     //const baseUrl = "http://10.20.2.78:5000"; // Use proper IP for Android device
 
@@ -129,45 +131,27 @@ export default function SignupScreen() {
         return "Medium";
     };
 
+    const fieldLabels: Record<keyof FormFields, string> = {
+        username: "Username",
+        email: "Email",
+        phoneNumber: "Phone Number",
+        password: "Password",
+        confirmPassword: "Confirm Password",
+        role: "Role",
+        accountType: "Account Type",
+    };
+
     return (
-
-
-        // <ScrollView contentContainerStyle={{ padding: 20, backgroundColor: "#FFF8DC" }}>
-        // <View className="flex-1 bg-[#FFF8DC]">
-        //     <ScrollView
-        //         // contentContainerStyle={{ padding: 20, paddingBottom: 20 }}
-        //         contentContainerStyle={{
-        //             paddingHorizontal: 20,
-        //             paddingTop: 80,         // ⬅️ Add more top space
-        //             paddingBottom: 40,      // ⬅️ For space at bottom
-        //         }}
-        //         showsVerticalScrollIndicator={false}
-        //     >
-        // <KeyboardAvoidingView
-        //     behavior={Platform.OS === "ios" ? "padding" : "height"}
-        //     style={{ flex: 1 }}
-        //     keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20} // tweak if needed
-        //     className="flex-1 bg-yellow-100 justify-center"
-        // >
-        //     <ScrollView
-        //         contentContainerStyle={{
-        //             paddingHorizontal: 20,
-        //             paddingTop: 80,
-        //             paddingBottom: 40,
-        //         }}
-        //         showsVerticalScrollIndicator={false}
-        //         keyboardShouldPersistTaps="handled"
-        //     >
-        <View style={{ flex: 1, backgroundColor: '#FFF7E0' }}>
+        <View style={{ flex: 1 }} className="bg-yellow-100">
             <KeyboardAvoidingView
                 style={{ flex: 1 }}
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0} // tweak if you have a header
+                keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}
             >
                 <ScrollView
                     contentContainerStyle={{
                         padding: 20,
-                        paddingBottom: 40, // ensure space when keyboard opens
+                        paddingBottom: 40,
                         flexGrow: 1,
                         paddingTop: 80,
                         justifyContent: 'flex-start',
@@ -175,64 +159,65 @@ export default function SignupScreen() {
                     keyboardShouldPersistTaps="handled"
                     showsVerticalScrollIndicator={false}
                 >
-                    <Text className="text-3xl font-bold text-yellow-800 text-center mb-6">Register for TaskApp</Text>
+                    <Text style={{
+                        fontSize: 28,
+                        fontWeight: 'bold',
+                        textAlign: 'center',
+                        marginBottom: 24,
+                        color: colorScheme === 'dark' ? '#000' : '#000',
+                    }}>Register for TaskApp</Text>
 
                     {(["username", "email", "phoneNumber"] as (keyof FormFields)[]).map((field) => (
                         <View key={field} className="mb-4">
+                            <Text className="mb-1 text-base font-medium text-yellow-700">
+                                {fieldLabels[field]}
+                            </Text>
                             <TextInput
                                 placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
                                 value={formData[field]}
                                 onChangeText={(text) => handleChange(field, text)}
-                                className="bg-white px-4 py-3 rounded-xl border border-gray-300"
+                                className="bg-white px-4 py-3 rounded-xl border border-gray-300 focus:border-yellow-500"
+                                placeholderTextColor={colorScheme === 'dark' ? '#d4d4d8' : '#a3a3a3'}
+                                style={{ color: colorScheme === 'dark' ? '#000' : '#000' }}
                             />
-                            {errors[field] && <Text className="text-red-600 text-sm">{errors[field]}</Text>}
+                            {errors[field] && <Text style={{ color: '#dc2626', fontSize: 13 }}>{errors[field]}</Text>}
                         </View>
                     ))}
 
-                    {/* <TextInput
-                placeholder="Account Type (User / Super Admin)"
-                value={formData.accountType}
-                onChangeText={(text) => handleChange("accountType", text)}
-                className="bg-white px-4 py-3 mb-4 rounded-xl border border-gray-300"
-            />
-            {errors.accountType && <Text className="text-red-600 text-sm">{errors.accountType}</Text>}
-
-            <TextInput
-                placeholder="Role"
-                value={formData.role}
-                onChangeText={(text) => handleChange("role", text)}
-                className="bg-white px-4 py-3 mb-4 rounded-xl border border-gray-300"
-            />
-            {errors.role && <Text className="text-red-600 text-sm">{errors.role}</Text>} */}
                     <View className="mb-4">
-                        <Text className="text-base text-yellow-700 mb-1">Account Type</Text>
+                        <Text className="text-base text-yellow-700 mb-1 font-medium">Account Type</Text>
                         <View className="bg-white rounded-xl border border-gray-300 overflow-hidden">
                             <Picker
                                 selectedValue={formData.accountType}
                                 onValueChange={(itemValue) =>
                                     setFormData((prev) => ({ ...prev, accountType: itemValue }))
                                 }
+                                style={{
+                                    color: formData.accountType === '' ? '#d1d5db' : '#000', // gray if placeholder
+                                }}
                             >
                                 <Picker.Item label="Select Account Type" value="" />
                                 <Picker.Item label="User" value="User" />
                                 <Picker.Item label="Super Admin" value="Super Admin" />
                             </Picker>
                         </View>
-                        {errors.accountType && <Text className="text-red-600 mt-1 text-sm">{errors.accountType}</Text>}
+                        {errors.accountType && <Text style={{ color: '#dc2626', fontSize: 13, marginTop: 4 }}>{errors.accountType}</Text>}
                     </View>
 
                     <View className="mb-4">
-                        <Text className="text-base text-yellow-700 mb-1">Role</Text>
+                        <Text className="text-base text-yellow-700 mb-1 font-medium">Role</Text>
                         <View className="bg-white rounded-xl border border-gray-300 overflow-hidden">
                             <Picker
                                 selectedValue={formData.role}
                                 onValueChange={(itemValue) =>
                                     setFormData((prev) => ({ ...prev, role: itemValue }))
                                 }
+                                style={{
+                                    color: formData.accountType === '' ? '#d1d5db' : '#000', // gray if placeholder
+                                }}
                             >
                                 <Picker.Item label="Select Role" value="" />
-                                {[
-                                    "Software Developer", "UI/UX Designer", "Product Designer",
+                                {["Software Developer", "UI/UX Designer", "Product Designer",
                                     "Marketing Specialist", "Content Writer", "Project Manager",
                                     "Business Analyst", "Quality Assurance", "DevOps Engineer",
                                     "Data Analyst", "Digital Marketing", "Sales Executive",
@@ -242,16 +227,14 @@ export default function SignupScreen() {
                                 ))}
                             </Picker>
                         </View>
-                        {errors.role && <Text className="text-red-600 mt-1 text-sm">{errors.role}</Text>}
+                        {errors.role && <Text style={{ color: '#dc2626', fontSize: 13, marginTop: 4 }}>{errors.role}</Text>}
                     </View>
-
-
 
                     <TouchableOpacity
                         onPress={handleSendOtp}
                         className="bg-yellow-500 py-3 rounded-xl mb-4 shadow-md active:bg-yellow-600"
                     >
-                        <Text className="text-center font-semibold">Send OTP</Text>
+                        <Text style={{ color: colorScheme === 'dark' ? '#18181b' : '#854d0e', textAlign: 'center', fontWeight: '600' }}>Send OTP</Text>
                     </TouchableOpacity>
 
                     {otpSent && (
@@ -260,9 +243,11 @@ export default function SignupScreen() {
                             value={otp}
                             onChangeText={setOtp}
                             className="bg-white px-4 py-3 mb-4 rounded-xl border border-gray-300"
+                            placeholderTextColor={colorScheme === 'dark' ? '#d4d4d8' : '#a3a3a3'}
+                            style={{ color: colorScheme === 'dark' ? '#000' : '#000' }}
                         />
                     )}
-                    {errors.otp && <Text className="text-red-600 text-sm">{errors.otp}</Text>}
+                    {errors.otp && <Text style={{ color: '#dc2626', fontSize: 13 }}>{errors.otp}</Text>}
 
                     {formData.accountType === "Super Admin" && (
                         <>
@@ -271,12 +256,13 @@ export default function SignupScreen() {
                                 value={inviteCode}
                                 onChangeText={setInviteCode}
                                 className="bg-white px-4 py-3 mb-4 rounded-xl border border-gray-300"
+                                placeholderTextColor={colorScheme === 'dark' ? '#d4d4d8' : '#a3a3a3'}
+                                style={{ color: colorScheme === 'dark' ? '#000' : '#000' }}
                             />
-                            {errors.inviteCode && <Text className="text-red-600 text-sm">{errors.inviteCode}</Text>}
+                            {errors.inviteCode && <Text style={{ color: '#dc2626', fontSize: 13 }}>{errors.inviteCode}</Text>}
                         </>
                     )}
 
-                    {/* Password Inputs */}
                     {(["password", "confirmPassword"] as (keyof FormFields)[]).map((field) => (
                         <View key={field} className="mb-4">
                             <View className="flex-row items-center bg-white rounded-xl border border-gray-300">
@@ -286,6 +272,8 @@ export default function SignupScreen() {
                                     value={formData[field]}
                                     onChangeText={(text) => handleChange(field, text)}
                                     className="flex-1 px-4 py-3"
+                                    placeholderTextColor={colorScheme === 'dark' ? '#d4d4d8' : '#a3a3a3'}
+                                    style={{ color: colorScheme === 'dark' ? '#000' : '#000' }}
                                 />
                                 <TouchableOpacity
                                     onPress={() =>
@@ -296,24 +284,29 @@ export default function SignupScreen() {
                                     className="px-4"
                                 >
                                     {(field === "password" ? showPassword : showConfirmPassword) ? (
-                                        <EyeOff size={20} />
+                                        <EyeOff size={20} color={colorScheme === 'dark' ? '#fde68a' : '#854d0e'} />
                                     ) : (
-                                        <Eye size={20} />
+                                        <Eye size={20} color={colorScheme === 'dark' ? '#fde68a' : '#854d0e'} />
                                     )}
                                 </TouchableOpacity>
                             </View>
-                            {errors[field] && <Text className="text-red-600 text-sm">{errors[field]}</Text>}
+                            {errors[field] && <Text style={{ color: '#dc2626', fontSize: 13 }}>{errors[field]}</Text>}
                         </View>
                     ))}
 
                     {formData.password ? (
                         <Text
-                            className={`text-sm mb-4 font-semibold ${getStrength(formData.password) === "Weak"
-                                ? "text-red-600"
-                                : getStrength(formData.password) === "Medium"
-                                    ? "text-yellow-600"
-                                    : "text-green-600"
-                                }`}
+                            style={{
+                                fontSize: 14,
+                                marginBottom: 16,
+                                fontWeight: '600',
+                                color:
+                                    getStrength(formData.password) === "Weak"
+                                        ? '#dc2626'
+                                        : getStrength(formData.password) === "Medium"
+                                            ? '#ca8a04'
+                                            : '#16a34a',
+                            }}
                         >
                             Password Strength: {getStrength(formData.password)}
                         </Text>
@@ -327,13 +320,13 @@ export default function SignupScreen() {
                         {loading ? (
                             <ActivityIndicator color="white" />
                         ) : (
-                            <Text className="text-center text-yellow-400 font-bold text-lg">Register</Text>
+                            <Text style={{ color: '#fde68a', textAlign: 'center', fontWeight: 'bold', fontSize: 18 }}>Register</Text>
                         )}
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => router.replace("/(auth)/login")} className="mt-6 items-center">
                         <Text className="text-sm text-yellow-800">
-                            Already have an account?{" "}
-                            <Text className="font-semibold underline">Login</Text>
+                            Already have an account?{' '}
+                            <Text style={{ fontWeight: '600', textDecorationLine: 'underline', color: colorScheme === 'dark' ? '#facc15' : '#a16207' }}>Login</Text>
                         </Text>
                     </TouchableOpacity>
 

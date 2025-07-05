@@ -143,10 +143,11 @@ import * as NavigationBar from 'expo-navigation-bar';
 import { Redirect, router, useRouter } from 'expo-router';
 import { Drawer } from 'expo-router/drawer';
 import { useEffect } from 'react';
-import { ActivityIndicator, Platform, Text, View } from 'react-native';
+import { ActivityIndicator, Platform, Text, useColorScheme, View } from 'react-native';
 
 export default function DashboardLayout() {
   const { user, loading } = useAuth();
+  const colorScheme = useColorScheme();
 
 
   // 👇 Hide Android Navigation Bar with swipe to reveal
@@ -169,73 +170,6 @@ export default function DashboardLayout() {
     return <Redirect href="/(auth)/login" />;
   }
 
-  // const handleLogout = async () => {
-  //   await AsyncStorage.removeItem('token');
-  //   router.replace('/(auth)/login');
-  // };
-
-  // const CustomDrawer = (props: any) => {
-  //   const pathname = usePathname();
-
-  //   useEffect(() => {
-  //     // This effect runs when the pathname changes
-  //     // You can use it to perform actions based on the current route
-  //     console.log('Current route:', pathname);
-  //   }, [pathname]);
-
-
-
-  //   return (
-
-  //     <DrawerContentScrollView {...props}>
-  //       <Drawer.Screen name="index" options={{ drawerItemStyle: { display: 'none' } }} />
-  //       <DrawerItem
-  //         label="Logout"
-  //         onPress={handleLogout}
-  //         icon={({ color, size }) => (
-  //           // <LogOut color={color} size={size} />
-  //           <MaterialCommunityIcons name="power-settings" size={24} color="black" />
-  //         )}
-  //       />
-  //       <DrawerItem
-  //         label="Dashboard"
-  //         onPress={() => {
-  //           router.push('/(dashboard)');
-  //         }}
-  //         icon={({ color, size }) => (
-  //           <Entypo name="home" size={24} color="black" />
-  //         )}
-  //       />
-  //       <DrawerItem
-  //         label="Profile"
-  //         onPress={() => {
-  //           router.push('/profile');
-  //         }}
-  //         icon={({ color, size }) => (
-  //           <AntDesign name="profile" size={24} color="black" />
-  //         )}
-  //       />
-  //       <DrawerItem
-  //         label="About"
-  //         onPress={() => {
-  //           router.push('/about');
-  //         }}
-  //         icon={({ color, size }) => (
-  //           <AntDesign name="infocirlce" size={24} color="black" />
-  //         )}
-  //       />
-  //       <DrawerItem
-  //         label="Settings"
-  //         onPress={() => {
-  //           router.push('/settings');
-  //         }}
-  //         icon={({ color, size }) => (
-  //           <SimpleLineIcons name="settings" size={24} color="black" />
-  //         )}
-  //       />
-  //     </DrawerContentScrollView>
-  //   );
-  // }
 
   const { logout } = useAuth();
 
@@ -261,7 +195,8 @@ export default function DashboardLayout() {
             <AntDesign name="user" size={40} color="black" />
           </View>
           <Text className="text-black font-bold text-lg">{(user?.username)?.toUpperCase()}</Text>
-          <Text className="text-black-400 font-bold text-sm mt-1">{user?.role} | {user?.accountType}</Text>
+          <Text className="text-black-400 font-bold text-sm mt-1" 
+          style={{ color: colorScheme === 'dark' ? '#000' : '#000' }}>{user?.role} | {user?.accountType}</Text>
         </View>
 
         <View className="mt-6">

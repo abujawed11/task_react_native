@@ -264,10 +264,9 @@
 
 
 import { useAuth } from "@/hooks/useAuth";
+import { useRegisterPushToken } from '@/hooks/useRegisterPushToken'; // 👈 import
 import { BASE_URL } from "@/utils/constants";
 import axios from "axios";
-import * as Device from "expo-device";
-import * as Notifications from "expo-notifications";
 import { router } from "expo-router";
 import { Eye, EyeOff } from "lucide-react-native";
 import React, { useEffect, useRef, useState } from "react";
@@ -279,6 +278,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  useColorScheme
 } from "react-native";
 
 export default function LoginScreen() {
@@ -287,6 +287,9 @@ export default function LoginScreen() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<{ username?: string; password?: string }>({});
+  const { registerPushToken } = useRegisterPushToken(); // 👈 use the hook
+  const colorScheme = useColorScheme();
+
   const usernameRef = useRef<TextInput>(null);
 
   useEffect(() => {
@@ -301,44 +304,44 @@ export default function LoginScreen() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const registerForPushToken = async (userId: string) => {
-    try {
-      if (!Device.isDevice) return;
+  // const registerForPushToken = async (userId: string) => {
+  //   try {
+  //     if (!Device.isDevice) return;
 
-      const { status: existingStatus } = await Notifications.getPermissionsAsync();
-      let finalStatus = existingStatus;
+  //     const { status: existingStatus } = await Notifications.getPermissionsAsync();
+  //     let finalStatus = existingStatus;
 
-      if (existingStatus !== "granted") {
-        const { status } = await Notifications.requestPermissionsAsync();
-        finalStatus = status;
-      }
+  //     if (existingStatus !== "granted") {
+  //       const { status } = await Notifications.requestPermissionsAsync();
+  //       finalStatus = status;
+  //     }
 
-      if (finalStatus !== "granted") {
-        console.warn("Permission for push notifications not granted.");
-        return;
-      }
+  //     if (finalStatus !== "granted") {
+  //       console.warn("Permission for push notifications not granted.");
+  //       return;
+  //     }
 
-      const tokenData = await Notifications.getExpoPushTokenAsync();
-      const expoPushToken = tokenData.data;
+  //     const tokenData = await Notifications.getExpoPushTokenAsync();
+  //     const expoPushToken = tokenData.data;
 
-      // const pushTokenData = await Notifications.getExpoPushTokenAsync();
-      // const expo_push_token = pushTokenData.data;
+  //     // const pushTokenData = await Notifications.getExpoPushTokenAsync();
+  //     // const expo_push_token = pushTokenData.data;
 
-      // ✅ LOG HERE — this helps debugging
-      // console.log("Sending token to backend", {
-      //   user_id: userId,
-      //   expo_push_token,
-      // });
+  //     // ✅ LOG HERE — this helps debugging
+  //     // console.log("Sending token to backend", {
+  //     //   user_id: userId,
+  //     //   expo_push_token,
+  //     // });
 
-      // Send token to backend
-      await axios.post(`${BASE_URL}/api/notifications/register-token`, {
-        user_id: userId,
-        expo_push_token: expoPushToken,
-      });
-    } catch (err) {
-      console.error("Failed to register for push notifications:", err);
-    }
-  };
+  //     // Send token to backend
+  //     await axios.post(`${BASE_URL}/api/notifications/register-token`, {
+  //       user_id: userId,
+  //       expo_push_token: expoPushToken,
+  //     });
+  //   } catch (err) {
+  //     console.error("Failed to register for push notifications:", err);
+  //   }
+  // };
 
   const handleLogin = async () => {
     if (!validateForm()) {
@@ -357,7 +360,7 @@ export default function LoginScreen() {
 
       // console.log("user is", user);
       // ✅ Register push token
-      await registerForPushToken(user.userId);
+      await registerPushToken(token);
 
       // Navigate to dashboard
       router.replace("/(dashboard)");
@@ -380,6 +383,7 @@ export default function LoginScreen() {
         <Text className="text-base text-yellow-700 mb-1">Username</Text>
         <TextInput
           ref={usernameRef}
+          placeholderTextColor={colorScheme === 'dark' ? '#999' : '#666'}
           placeholder="Enter your username"
           value={username}
           onChangeText={(text) => {
@@ -387,6 +391,7 @@ export default function LoginScreen() {
             setErrors((prev) => ({ ...prev, username: undefined }));
           }}
           className="bg-white px-4 py-3 rounded-xl border border-gray-300 focus:border-yellow-500"
+          style={{ color: colorScheme === 'dark' ? '#000' : '#000' }} // 👈 ensure visible text
         />
         {errors.username && <Text className="text-red-600 mt-1 text-sm">{errors.username}</Text>}
       </View>
@@ -397,6 +402,7 @@ export default function LoginScreen() {
         <View className="flex-row items-center bg-white rounded-xl border border-gray-300 focus:border-yellow-500">
           <TextInput
             placeholder="Enter your password"
+            placeholderTextColor={colorScheme === 'dark' ? '#999' : '#666'}
             value={password}
             onChangeText={(text) => {
               setPassword(text);
@@ -404,6 +410,7 @@ export default function LoginScreen() {
             }}
             secureTextEntry={!showPassword}
             className="flex-1 px-4 py-3"
+            style={{ color: colorScheme === 'dark' ? '#000' : '#000' }} // 👈 ensure visible text
           />
           <TouchableOpacity onPress={() => setShowPassword((prev) => !prev)} className="px-4">
             {showPassword ? <EyeOff size={20} color="gray" /> : <Eye size={20} color="gray" />}

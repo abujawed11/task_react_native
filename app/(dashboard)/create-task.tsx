@@ -1044,6 +1044,353 @@
 
 // export default CreateTaskScreen;
 
+// import { BASE_URL } from '@/utils/constants';
+// import { Ionicons } from '@expo/vector-icons';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
+// import DateTimePicker from '@react-native-community/datetimepicker';
+// import { Picker } from '@react-native-picker/picker';
+// import axios from 'axios';
+// // import * as Audio from 'expo-av';
+// import { Audio } from 'expo-av';
+// import * as DocumentPicker from 'expo-document-picker';
+// import { useRouter } from 'expo-router';
+// import React, { useEffect, useState } from 'react';
+// import { Alert, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+
+// const CreateTaskScreen: React.FC = () => {
+//   const router = useRouter();
+
+//   const [title, setTitle] = useState('');
+//   const [description, setDescription] = useState('');
+//   const [priority, setPriority] = useState('');
+//   const [assignedTo, setAssignedTo] = useState('');
+//   const [dueDate, setDueDate] = useState<Date | null>(null);
+//   const [showDatePicker, setShowDatePicker] = useState(false);
+//   const [users, setUsers] = useState<string[]>([]);
+//   const [file, setFile] = useState<any>(null);
+//   const [audioUri, setAudioUri] = useState<string | null>(null);
+//   const [recording, setRecording] = useState<Audio.Recording | null>(null);
+//   const [isRecording, setIsRecording] = useState(false);
+//   const [sound, setSound] = useState<Audio.Sound | null>(null);
+//   const [isPlaying, setIsPlaying] = useState(false);
+//   // Play recorded audio
+//   const handlePlayAudio = async () => {
+//     if (!audioUri) return;
+//     try {
+//       if (sound) {
+//         await sound.unloadAsync();
+//         setSound(null);
+//       }
+//       const { sound: newSound } = await Audio.Sound.createAsync({ uri: audioUri });
+//       setSound(newSound);
+//       setIsPlaying(true);
+//       newSound.setOnPlaybackStatusUpdate((status) => {
+//         if (!status.isLoaded) return;
+//         if (status.didJustFinish) {
+//           setIsPlaying(false);
+//           newSound.unloadAsync();
+//           setSound(null);
+//         }
+//       });
+//       await newSound.playAsync();
+//     } catch (err) {
+//       setIsPlaying(false);
+//       setSound(null);
+//       Alert.alert('Failed to play audio');
+//     }
+//   };
+
+//   // Stop audio playback
+//   const handleStopAudio = async () => {
+//     if (sound) {
+//       await sound.stopAsync();
+//       await sound.unloadAsync();
+//       setSound(null);
+//     }
+//     setIsPlaying(false);
+//   };
+
+//   useEffect(() => {
+//     const fetchUsers = async () => {
+//       const token = await AsyncStorage.getItem('token');
+//       const res = await axios.get(`${BASE_URL}/api/tasks/list`, {
+//         headers: { Authorization: `Bearer ${token}` },
+//       });
+//       setUsers(res.data);
+//     };
+//     fetchUsers();
+//   }, []);
+
+//   const handleFilePick = async () => {
+//     const res = await DocumentPicker.getDocumentAsync({});
+//     if (res.assets && res.assets[0]) {
+//       const picked = res.assets[0];
+//       setFile({
+//         uri: picked.uri,
+//         name: picked.name,
+//         type: picked.mimeType || 'application/octet-stream',
+//       });
+//     }
+//   };
+
+//   const handleAudioRecord = async () => {
+//     const permission = await Audio.requestPermissionsAsync();
+//     if (!permission.granted) {
+//       Alert.alert('Mic permission required');
+//       return;
+//     }
+
+//     try {
+//       if (isRecording) {
+//         await recording?.stopAndUnloadAsync();
+//         const uri = recording?.getURI();
+//         setAudioUri(uri || null);
+//         setRecording(null);
+//         setIsRecording(false);
+//       } else {
+//         await Audio.setAudioModeAsync({
+//           allowsRecordingIOS: true,
+//           playsInSilentModeIOS: true,
+//         });
+
+//         const newRecording = new Audio.Recording();
+//         await newRecording.prepareToRecordAsync({
+//           isMeteringEnabled: false,
+//           android: {
+//             extension: '.m4a',
+//             outputFormat: 2, // 2 = MPEG_4, see https://docs.expo.dev/versions/latest/sdk/audio/#android
+//             audioEncoder: 3, // 3 = AAC, see https://docs.expo.dev/versions/latest/sdk/audio/#android
+//             sampleRate: 44100,
+//             numberOfChannels: 2,
+//             bitRate: 128000,
+//           },
+//           ios: {
+//             extension: '.m4a',
+//             audioQuality: 2, // 2 = AVAudioQuality.High
+//             sampleRate: 44100,
+//             numberOfChannels: 2,
+//             bitRate: 128000,
+//             linearPCMBitDepth: 16,
+//             linearPCMIsBigEndian: false,
+//             linearPCMIsFloat: false,
+//           },
+//           web: {
+//             mimeType: undefined,
+//             bitsPerSecond: undefined
+//           }
+//         });
+
+//         await newRecording.startAsync();
+//         setRecording(newRecording);
+//         setIsRecording(true);
+//         setAudioUri(null); // reset any previous recording
+//       }
+//     } catch (err) {
+//       console.error('Recording Error:', err);
+//       Alert.alert('Failed to record audio.');
+//     }
+//   };
+
+//   const handleDeleteAudio = () => {
+//     setAudioUri(null);
+//   };
+
+//   const handleSubmit = async () => {
+//     if (!title || !priority || !assignedTo || !dueDate) {
+//       Alert.alert('Please fill all required fields');
+//       return;
+//     }
+
+//     const token = await AsyncStorage.getItem('token');
+//     const formData = new FormData();
+
+//     formData.append('title', title);
+//     formData.append('description', description);
+//     formData.append('priority', priority);
+//     formData.append('assigned_to', assignedTo);
+//     formData.append('due_date', dueDate.toISOString().split('T')[0]);
+
+//     if (file) {
+//       formData.append('file', {
+//         uri: file.uri,
+//         name: file.name,
+//         type: file.type || 'application/octet-stream',
+//       } as any);
+//     }
+
+//     if (audioUri) {
+//       formData.append('audio', {
+//         uri: audioUri,
+//         name: 'recording.m4a',
+//         type: 'audio/x-m4a',
+//       } as any);
+//     }
+
+//     try {
+//       await axios.post(`${BASE_URL}/api/tasks/create`, formData, {
+//         headers: {
+//           Authorization: `Bearer ${token}`,
+//           'Content-Type': 'multipart/form-data',
+//         },
+//       });
+
+//       Alert.alert('Task created successfully!');
+
+//       // Reset all fields
+//       setTitle('');
+//       setDescription('');
+//       setPriority('');
+//       setAssignedTo('');
+//       setDueDate(null);
+//       setFile(null);
+//       setAudioUri(null);
+//       setRecording(null);
+//       setIsRecording(false);
+//       setSound(null);
+//       setIsPlaying(false);
+
+//       router.push('/(dashboard)');
+//     } catch (error) {
+//       console.error(error);
+//       Alert.alert('Error creating task. Please try again.');
+//     }
+//   };
+
+//   return (
+//     <ScrollView className="bg-yellow-100 min-h-screen p-4">
+//       <View className="flex-1 w-full max-w-md mx-auto">
+//         {/* <Text className="text-3xl font-bold text-black mb-6 text-center">Create Task</Text> */}
+
+//         <TextInput
+//           placeholder="Title"
+//           value={title}
+//           onChangeText={setTitle}
+//           className="bg-white p-4 rounded-xl border border-gray-300 mb-4 text-base"
+//         />
+
+//         <TextInput
+//           placeholder="Description"
+//           value={description}
+//           onChangeText={setDescription}
+//           multiline
+//           numberOfLines={6}
+//           className="bg-white p-4 rounded-xl border border-gray-300 mb-4 text-base h-32"
+//         />
+
+//         <View className="bg-white rounded-xl border border-gray-300 mb-4">
+//           <Picker
+//             selectedValue={priority}
+//             onValueChange={(val) => setPriority(val)}
+//             className="text-base"
+//           >
+//             <Picker.Item label="Select Priority" value="" />
+//             <Picker.Item label="Low" value="Low" />
+//             <Picker.Item label="Medium" value="Medium" />
+//             <Picker.Item label="High" value="High" />
+//           </Picker>
+//         </View>
+
+//         <View className="bg-white rounded-xl border border-gray-300 mb-4">
+//           <Picker
+//             selectedValue={assignedTo}
+//             onValueChange={(val) => setAssignedTo(val)}
+//             className="text-base"
+//           >
+//             <Picker.Item label="Assign To" value="" />
+//             {users.map((u, idx) => (
+//               <Picker.Item key={idx} label={u} value={u} />
+//             ))}
+//           </Picker>
+//         </View>
+
+//         <View className="relative mb-4">
+//           <TouchableOpacity
+//             onPress={() => setShowDatePicker(true)}
+//             className="flex-row items-center bg-white p-4 rounded-xl border border-gray-300"
+//             activeOpacity={0.8}
+//           >
+//             <Text className={`flex-1 text-base ${dueDate ? 'text-gray-700' : 'text-gray-400'}`}>
+//               {dueDate ? dueDate.toLocaleDateString() : 'dd-mm-yyyy'}
+//             </Text>
+//             <Ionicons name="calendar-outline" size={20} color="gray" />
+//           </TouchableOpacity>
+//         </View>
+
+//         {showDatePicker && (
+//           <DateTimePicker
+//             value={dueDate || new Date()}
+//             mode="date"
+//             display="default"
+//             onChange={(e, selectedDate) => {
+//               setShowDatePicker(false);
+//               if (selectedDate) setDueDate(selectedDate);
+//             }}
+//           />
+//         )}
+
+//         <TouchableOpacity
+//           onPress={handleFilePick}
+//           className="bg-black p-4 rounded-xl mb-4 active:opacity-80"
+//         >
+//           <Text className="text-yellow-400 font-bold text-center">Attach File</Text>
+//         </TouchableOpacity>
+//         {/* {file && <Text className="text-black mb-2">Selected: {file.name}</Text>} */}
+//         {file && (
+//           <View className="flex-row justify-between items-center mt-2 bg-white p-3 rounded-lg border border-gray-300 mb-2">
+//             <Text className="text-black flex-1" numberOfLines={1}>
+//               {file.name}
+//             </Text>
+//             <TouchableOpacity onPress={() => setFile(null)}>
+//               <Ionicons name="trash" size={24} color="red" />
+//             </TouchableOpacity>
+//           </View>
+//         )}
+
+//         <View className="mb-4">
+//           <TouchableOpacity
+//             onPress={handleAudioRecord}
+//             className={`p-4 rounded-xl active:opacity-80 ${isRecording ? 'bg-red-600' : 'bg-black'
+//               }`}
+//           >
+//             <Text className="text-yellow-400 font-bold text-center">
+//               {isRecording ? 'Stop Recording' : 'Record Audio'}
+//             </Text>
+//           </TouchableOpacity>
+
+//           {audioUri && (
+//             <View className="flex-row justify-between items-center mt-2 bg-white p-3 rounded-lg border border-gray-300">
+//               <Text className="text-black flex-1" numberOfLines={1}>
+//                 Audio Recorded
+//               </Text>
+//               <TouchableOpacity
+//                 onPress={isPlaying ? handleStopAudio : handlePlayAudio}
+//                 className="mr-2"
+//                 disabled={isPlaying && !sound}
+//               >
+//                 <Ionicons name={isPlaying ? 'pause' : 'play'} size={24} color="#22c55e" />
+//               </TouchableOpacity>
+//               <TouchableOpacity onPress={handleDeleteAudio}>
+//                 <Ionicons name="trash" size={24} color="red" />
+//               </TouchableOpacity>
+//             </View>
+//           )}
+//         </View>
+
+//         <TouchableOpacity
+//           onPress={handleSubmit}
+//           className="bg-yellow-500 p-4 rounded-xl active:opacity-80"
+//         >
+//           <Text className="text-black font-bold text-center text-base">Create Task</Text>
+//         </TouchableOpacity>
+//       </View>
+//     </ScrollView>
+//   );
+// };
+
+// export default CreateTaskScreen;
+
+
+
 import { BASE_URL } from '@/utils/constants';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -1055,9 +1402,19 @@ import { Audio } from 'expo-av';
 import * as DocumentPicker from 'expo-document-picker';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { Alert, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import {
+  Alert,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+  useColorScheme,
+} from 'react-native';
 
 const CreateTaskScreen: React.FC = () => {
+  const scheme = useColorScheme();
+  const isDark = scheme === 'dark';
   const router = useRouter();
 
   const [title, setTitle] = useState('');
@@ -1256,6 +1613,10 @@ const CreateTaskScreen: React.FC = () => {
     }
   };
 
+  const inputBg = isDark ? 'bg-white' : 'bg-white border-gray-300';
+  const textColor = isDark ? 'text-black' : 'text-black';
+  const placeholderTextColor = isDark ? '#d1d5db' : '#555';
+
   return (
     <ScrollView className="bg-yellow-100 min-h-screen p-4">
       <View className="flex-1 w-full max-w-md mx-auto">
@@ -1263,25 +1624,28 @@ const CreateTaskScreen: React.FC = () => {
 
         <TextInput
           placeholder="Title"
+          placeholderTextColor={placeholderTextColor}
           value={title}
           onChangeText={setTitle}
-          className="bg-white p-4 rounded-xl border border-gray-300 mb-4 text-base"
+          className={`${inputBg} ${textColor} p-4 rounded-xl border mb-4 text-base`}
         />
 
         <TextInput
           placeholder="Description"
+          placeholderTextColor={placeholderTextColor}
           value={description}
           onChangeText={setDescription}
           multiline
           numberOfLines={6}
-          className="bg-white p-4 rounded-xl border border-gray-300 mb-4 text-base h-32"
+          className={`${inputBg} ${textColor} p-4 rounded-xl border mb-4 text-base h-32`}
         />
 
-        <View className="bg-white rounded-xl border border-gray-300 mb-4">
+        <View className={`${inputBg} rounded-xl border mb-4`}>
           <Picker
             selectedValue={priority}
-            onValueChange={(val) => setPriority(val)}
-            className="text-base"
+            onValueChange={setPriority}
+            dropdownIconColor={isDark ? '#000' : '#000'}
+            style={{ color: isDark ? '#000' : '#000' }}
           >
             <Picker.Item label="Select Priority" value="" />
             <Picker.Item label="Low" value="Low" />
@@ -1290,11 +1654,12 @@ const CreateTaskScreen: React.FC = () => {
           </Picker>
         </View>
 
-        <View className="bg-white rounded-xl border border-gray-300 mb-4">
+        <View className={`${inputBg} rounded-xl border mb-4`}>
           <Picker
             selectedValue={assignedTo}
-            onValueChange={(val) => setAssignedTo(val)}
-            className="text-base"
+            onValueChange={setAssignedTo}
+            dropdownIconColor={isDark ? '#000' : '#000'}
+            style={{ color: isDark ? '#000' : '#000' }}
           >
             <Picker.Item label="Assign To" value="" />
             {users.map((u, idx) => (
@@ -1303,18 +1668,15 @@ const CreateTaskScreen: React.FC = () => {
           </Picker>
         </View>
 
-        <View className="relative mb-4">
-          <TouchableOpacity
-            onPress={() => setShowDatePicker(true)}
-            className="flex-row items-center bg-white p-4 rounded-xl border border-gray-300"
-            activeOpacity={0.8}
-          >
-            <Text className={`flex-1 text-base ${dueDate ? 'text-gray-700' : 'text-gray-400'}`}>
-              {dueDate ? dueDate.toLocaleDateString() : 'dd-mm-yyyy'}
-            </Text>
-            <Ionicons name="calendar-outline" size={20} color="gray" />
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity
+          onPress={() => setShowDatePicker(true)}
+          className={`${inputBg} flex-row items-center p-4 rounded-xl border mb-4`}
+        >
+          <Text className={`flex-1 text-base ${dueDate ? textColor : 'text-gray-400'}`}>
+            {dueDate ? dueDate.toLocaleDateString() : 'dd-mm-yyyy'}
+          </Text>
+          <Ionicons name="calendar-outline" size={20} color={isDark ? '#fff' : 'gray'} />
+        </TouchableOpacity>
 
         {showDatePicker && (
           <DateTimePicker
@@ -1330,14 +1692,14 @@ const CreateTaskScreen: React.FC = () => {
 
         <TouchableOpacity
           onPress={handleFilePick}
-          className="bg-black p-4 rounded-xl mb-4 active:opacity-80"
+          className="bg-black p-4 rounded-xl mb-4"
         >
           <Text className="text-yellow-400 font-bold text-center">Attach File</Text>
         </TouchableOpacity>
         {/* {file && <Text className="text-black mb-2">Selected: {file.name}</Text>} */}
         {file && (
-          <View className="flex-row justify-between items-center mt-2 bg-white p-3 rounded-lg border border-gray-300 mb-2">
-            <Text className="text-black flex-1" numberOfLines={1}>
+          <View className={`${inputBg} flex-row justify-between items-center p-3 rounded-lg border mb-2`}>
+            <Text className={`${textColor} flex-1`} numberOfLines={1}>
               {file.name}
             </Text>
             <TouchableOpacity onPress={() => setFile(null)}>
