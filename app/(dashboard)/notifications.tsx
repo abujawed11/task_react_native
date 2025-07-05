@@ -1,7 +1,7 @@
 import { useAuth } from '@/context/AuthContext';
 import { NotificationContext } from '@/context/NotificationContext';
-import { useRouter } from 'expo-router';
-import React, { useContext, useState } from 'react';
+import { useFocusEffect, useRouter } from 'expo-router';
+import React, { useCallback, useContext, useState } from 'react';
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 
 const formatDateTime = (dateStr?: string | null) => {
@@ -16,10 +16,20 @@ const formatDateTime = (dateStr?: string | null) => {
 };
 
 const NotificationScreen = () => {
-  const { notifications, markAsRead } = useContext(NotificationContext);
+  const { notifications, markAsRead,fetchNotifications } = useContext(NotificationContext);
   const [hiddenNotificationIds, setHiddenNotificationIds] = useState<string[]>([]);
   const router = useRouter();
-  const { user,loading } = useAuth();
+  const { user, loading } = useAuth();
+
+
+  // 👇 Fetch when screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      if (user && !loading) {
+        fetchNotifications();
+      }
+    }, [user, loading])
+  );
 
   const handleMarkAsRead = (id: string) => {
     markAsRead(id);
@@ -34,14 +44,14 @@ const NotificationScreen = () => {
     // })
   };
 
-    //  useEffect(() => {
-    //       if (user) {
-    //           console.log("Fetch nOtificTions called")
-    //           fetchNotifications();
-    //           const interval = setInterval(fetchNotifications, 2 * 60 * 1000);
-    //           return () => clearInterval(interval);
-    //       }
-    //   }, [user,loading]);
+  //  useEffect(() => {
+  //       if (user) {
+  //           console.log("Fetch nOtificTions called")
+  //           fetchNotifications();
+  //           const interval = setInterval(fetchNotifications, 2 * 60 * 1000);
+  //           return () => clearInterval(interval);
+  //       }
+  //   }, [user,loading]);
 
   const visibleNotifications = notifications.filter(
     (note) => !hiddenNotificationIds.includes(note.notification_id)

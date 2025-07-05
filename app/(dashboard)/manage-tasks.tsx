@@ -724,7 +724,7 @@ import { downloadTaskExcel } from '@/utils/downloadExcel';
 import { FontAwesome5 } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Funnel, SortAsc } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import {
@@ -747,6 +747,7 @@ export default function ManageAllTasksScreen() {
   const [showFilter, setShowFilter] = useState(false);
   const [showSort, setShowSort] = useState(false);
   const [expandedDescriptions, setExpandedDescriptions] = useState<Record<string, boolean>>({});
+  const params = useLocalSearchParams();
 
   const [filters, setFilters] = useState<TaskFilters>({
     assigned_to: '',
@@ -783,7 +784,7 @@ export default function ManageAllTasksScreen() {
         axios.get(`${BASE_URL}/api/tasks/all`, config),
         axios.get(`${BASE_URL}/api/tasks/users/all`, config),
       ]);
-
+      // console.log("Admin tasks fetched:");
       setTasks(taskRes.data);
       setUsers(userRes.data.map((u: any) => ({ username: u.username })));
     } catch (err) {
@@ -796,7 +797,15 @@ export default function ManageAllTasksScreen() {
   useEffect(() => {
     if (user?.accountType === 'Super Admin') fetchTasks();
     else router.replace('/dashboard');
-  }, []);
+  }, [user, BASE_URL]);
+
+  useEffect(() => {
+    if (params.refresh) {
+      // console.log("Triggering refresh from Admin param:", params.refresh);
+      fetchTasks();
+      router.setParams({ refresh: undefined }); // reset to avoid infinite fetch
+    }
+  }, [params.refresh]);
 
   useEffect(() => {
     let filtered = [...tasks];
@@ -866,7 +875,8 @@ export default function ManageAllTasksScreen() {
         <Text className="text-center mt-8 text-black font-semibold">No tasks found.</Text>
       ) : (
         <FlatList
-          data={filteredTasks}
+          data={[...filteredTasks].reverse()} // ⬅️ reversed safely
+          // data={filteredTasks}
           keyExtractor={(item) => item.task_id}
           renderItem={({ item }) => (
             <View className="px-4 mb-">

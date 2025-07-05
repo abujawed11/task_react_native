@@ -1235,6 +1235,20 @@ const CreateTaskScreen: React.FC = () => {
       });
 
       Alert.alert('Task created successfully!');
+
+      // Reset all fields
+      setTitle('');
+      setDescription('');
+      setPriority('');
+      setAssignedTo('');
+      setDueDate(null);
+      setFile(null);
+      setAudioUri(null);
+      setRecording(null);
+      setIsRecording(false);
+      setSound(null);
+      setIsPlaying(false);
+
       router.push('/(dashboard)');
     } catch (error) {
       console.error(error);
@@ -1320,14 +1334,23 @@ const CreateTaskScreen: React.FC = () => {
         >
           <Text className="text-yellow-400 font-bold text-center">Attach File</Text>
         </TouchableOpacity>
-        {file && <Text className="text-black mb-2">Selected: {file.name}</Text>}
+        {/* {file && <Text className="text-black mb-2">Selected: {file.name}</Text>} */}
+        {file && (
+          <View className="flex-row justify-between items-center mt-2 bg-white p-3 rounded-lg border border-gray-300 mb-2">
+            <Text className="text-black flex-1" numberOfLines={1}>
+              {file.name}
+            </Text>
+            <TouchableOpacity onPress={() => setFile(null)}>
+              <Ionicons name="trash" size={24} color="red" />
+            </TouchableOpacity>
+          </View>
+        )}
 
         <View className="mb-4">
           <TouchableOpacity
             onPress={handleAudioRecord}
-            className={`p-4 rounded-xl active:opacity-80 ${
-              isRecording ? 'bg-red-600' : 'bg-black'
-            }`}
+            className={`p-4 rounded-xl active:opacity-80 ${isRecording ? 'bg-red-600' : 'bg-black'
+              }`}
           >
             <Text className="text-yellow-400 font-bold text-center">
               {isRecording ? 'Stop Recording' : 'Record Audio'}

@@ -15,7 +15,7 @@ const TaskProgress = () => {
     // const { taskId } = useLocalSearchParams<{ taskId: string }>();
     const { taskId } = useLocalSearchParams<{ taskId: string }>();
 
-    console.log('taskId from route:', taskId);
+    // console.log('taskId from route:', taskId);
     const router = useRouter();
     const [task, setTask] = useState<Task | null>(null);
     const [updates, setUpdates] = useState<TaskUpdate[]>([]);
@@ -135,7 +135,7 @@ const TaskProgress = () => {
     useEffect(() => {
         const fetchTaskProgress = async () => {
             try {
-                console.log('Fetching progress for task:', taskId); // ✅ Add here
+                // console.log('Fetching progress for task:', taskId); // ✅ Add here
 
                 const token = await AsyncStorage.getItem('token');
                 //console.log('Token:', token); // ✅ Add here

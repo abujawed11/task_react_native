@@ -233,7 +233,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const login = async (user: User, token: string) => {
     try {
-      console.log("Logging IN")
+      // console.log("Logging IN")
       isLoggingIn.current = true; // ✅ Mark login in progress
       await AsyncStorage.setItem("token", token);
       await AsyncStorage.setItem("user", JSON.stringify(user));
@@ -249,7 +249,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       // }, 100);         // A small delay to flush async state
       setUser(user);
       setTimeout(() => {
-        console.log("logging...........")
+        // console.log("logging...........")
         router.replace("/(dashboard)");
       }, 200);
       // console.log( "Token set:", token);

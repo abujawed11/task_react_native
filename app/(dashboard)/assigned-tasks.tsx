@@ -216,6 +216,7 @@ import { BASE_URL } from '@/utils/constants';
 import { downloadTaskExcel } from '@/utils/downloadExcel';
 import { FontAwesome5 } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useLocalSearchParams } from 'expo-router';
 import { Funnel, SortAsc } from 'lucide-react-native';
 
 const AssignedTasksScreen: React.FC = () => {
@@ -230,6 +231,7 @@ const AssignedTasksScreen: React.FC = () => {
   const [showFilter, setShowFilter] = useState(false);
   const [showSort, setShowSort] = useState(false);
   const [users, setUsers] = useState([]);
+  const params = useLocalSearchParams();
 
   const [filters, setFilters] = useState<TaskFilters>({
     assigned_to: '',
@@ -272,6 +274,14 @@ const AssignedTasksScreen: React.FC = () => {
   //     if (user) fetchTasks();
   //   }, [user])
   // );
+
+  useEffect(() => {
+    if (params.refresh) {
+      // console.log("Triggering refresh from param:", params.refresh);
+      fetchTasks();
+      router.setParams({ refresh: undefined }); // reset to avoid infinite fetch
+    }
+  }, [params.refresh]);
 
   useEffect(() => {
     let filtered = [...tasks];
@@ -374,7 +384,7 @@ const AssignedTasksScreen: React.FC = () => {
           <Text className="text-center text-gray-500 mt-10">No assigned tasks.</Text>
         ) : (
           <View className="space-y-4">
-            {filteredTasks.map((task) => (
+            {[...filteredTasks].reverse().map((task) => (
               <TaskCard
                 key={task.task_id}
                 task={task}
@@ -383,6 +393,15 @@ const AssignedTasksScreen: React.FC = () => {
                 location="assignTasks"
               />
             ))}
+            {/* {filteredTasks.map((task) => (
+              <TaskCard
+                key={task.task_id}
+                task={task}
+                expanded={!!expandedDescriptions[task.task_id]}
+                toggleDescription={toggleDescription}
+                location="assignTasks"
+              />
+            ))} */}
           </View>
         )}
       </ScrollView>

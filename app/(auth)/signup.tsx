@@ -79,14 +79,14 @@ export default function SignupScreen() {
             return;
         }
         try {
-            console.log("📨 Sending OTP to:", formData.email);
+            // console.log("📨 Sending OTP to:", formData.email);
             Alert.alert("Debug", "Sending OTP...");
-            console.log(BASE_URL)
+            // console.log(BASE_URL)
             const res = await axios.post(`${BASE_URL}/api/auth/send-otp`, {
                 email: formData.email,
             });
 
-            console.log("✅ OTP Sent Response:", res.data);
+            // console.log("✅ OTP Sent Response:", res.data);
             setOtpSent(true);
             Alert.alert("OTP Sent", "Check your email.");
         } catch (error: any) {

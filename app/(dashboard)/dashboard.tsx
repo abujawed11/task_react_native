@@ -319,7 +319,7 @@ export default function Dashboard() {
       try {
         const token = await AsyncStorage.getItem('token');
         await AsyncStorage.getItem('user'); // Ensure user is loaded
-        console.log(user)
+        // console.log(user)
         const res = await axios.get(`${BASE_URL}/api/tasks/dashboard`, {
           headers: { Authorization: `Bearer ${token}` },
         });

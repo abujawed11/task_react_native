@@ -1,10 +1,10 @@
 {
   "expo": {
     "name": "Sun-Rack Task",
-    "slug": "sun-rack-task",
+    "slug": "task_react_native",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/app_icon.png",
     "scheme": "taskreactnative",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": false,

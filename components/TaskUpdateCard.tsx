@@ -326,7 +326,7 @@ const TaskUpdateCard: React.FC<Props> = ({ update }) => {
     };
 
 
-    console.log('Image URL:', `${BASE_URL}/${update.file_path}`);
+    // console.log('Image URL:', `${BASE_URL}/${update.file_path}`);
     return (
         <View className="mb-6 border border-yellow-500 rounded-lg bg-white shadow-md">
             {/* Header */}
@@ -439,7 +439,7 @@ const TaskUpdateCard: React.FC<Props> = ({ update }) => {
                             // </TouchableOpacity>
                             <TouchableOpacity
                                 onPress={() => {
-                                    console.log('Pressed image:', `${BASE_URL}/${update.file_path}`);
+                                    // console.log('Pressed image:', `${BASE_URL}/${update.file_path}`);
                                     openLink(`${BASE_URL}/${update.file_path}`);
                                 }}
                                 activeOpacity={0.7}

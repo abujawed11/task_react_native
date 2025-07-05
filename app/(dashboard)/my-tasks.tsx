@@ -1056,7 +1056,7 @@ const MyTasksScreen = () => {
 
   const fetchTasks = async () => {
     try {
-      console.log("Intial Task Fetch")
+      // console.log("Intial Task Fetch")
       const token = await AsyncStorage.getItem('token');
       const response = await axios.get(`${BASE_URL}/api/tasks/assigned`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -1081,6 +1081,14 @@ const MyTasksScreen = () => {
   //     router.setParams({ refresh: undefined });
   //   }
   // }, [params.refresh]);
+
+  useEffect(() => {
+    if (params.refresh) {
+      // console.log("Triggering refresh from param:", params.refresh);
+      fetchTasks();
+      router.setParams({ refresh: undefined }); // reset to avoid infinite fetch
+    }
+  }, [params.refresh]);
 
   // useFocusEffect(
   //   useCallback(() => {
@@ -1200,7 +1208,7 @@ const MyTasksScreen = () => {
           {filteredTasks.length === 0 ? (
             <Text className="text-center text-gray-500 mt-10">No tasks found.</Text>
           ) : (
-            filteredTasks.map((task) => (
+            [...filteredTasks].reverse().map((task) => (
               <TaskCard
                 key={task.task_id}
                 task={task}
@@ -1209,6 +1217,15 @@ const MyTasksScreen = () => {
                 location="myTasks"
               />
             ))
+            // filteredTasks.map((task) => (
+            //   <TaskCard
+            //     key={task.task_id}
+            //     task={task}
+            //     expanded={!!expandedDescriptions[task.task_id]}
+            //     toggleDescription={toggleDescription}
+            //     location="myTasks"
+            //   />
+            // ))
           )}
         </View>
       </ScrollView>

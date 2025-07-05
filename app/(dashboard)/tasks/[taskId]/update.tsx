@@ -351,6 +351,16 @@ export default function UpdateTaskScreen() {
     const [showDatePicker, setShowDatePicker] = useState(false);
     const navigation = useNavigation();
 
+    const [initialValues, setInitialValues] = useState({
+        title: '',
+        description: '',
+        dueDate: '',
+        priority: '',
+        assignedTo: '',
+        status: '',
+    });
+
+
     useEffect(() => {
         if (!sound) return;
         return () => {
@@ -380,6 +390,16 @@ export default function UpdateTaskScreen() {
             setPriority(data.priority);
             setAssignedTo(data.assigned_to);
             setStatus(data.status);
+
+            // Add below lines
+            setInitialValues({
+                title: data.title,
+                description: data.description,
+                dueDate: data.due_date?.split('T')[0] || '',
+                priority: data.priority,
+                assignedTo: data.assigned_to,
+                status: data.status,
+            });
         } catch (err) {
             Alert.alert('Error', 'Failed to fetch task');
         } finally {
@@ -469,6 +489,18 @@ export default function UpdateTaskScreen() {
         if (result.assets?.length) setFile(result.assets[0]);
     };
 
+    const isFieldChanged =
+        title !== initialValues.title ||
+        description !== initialValues.description ||
+        dueDate !== initialValues.dueDate ||
+        priority !== initialValues.priority ||
+        assignedTo !== initialValues.assignedTo ||
+        status !== initialValues.status ||
+        !!audioUri ||
+        !!file ||
+        comment.trim().length > 0;
+
+
     const handleUpdate = async () => {
         const formData = new FormData();
         formData.append('status', status);
@@ -523,11 +555,25 @@ export default function UpdateTaskScreen() {
             //     pathname: '/(dashboard)',
             //     params: { refresh: 'true' },
             // });
+            // console.log(from)
+            if (from === 'adminTasks') {
+                router.push({
+                    pathname: '/(dashboard)/manage-tasks',
+                    params: { refresh: Date.now().toString() },
+                });
+            }
+            else {
+                router.push({
+                    pathname: '/(dashboard)',
+                    params: { refresh: Date.now().toString() }, // 👈 makes it unique every time
+                });
+            }
+
 
             // navigation.navigate('My Tasks');
-            router.push({
-                pathname: '/(dashboard)',
-            });
+            // router.push({
+            //     pathname: '/(dashboard)',
+            // });
 
 
         } catch {
@@ -676,9 +722,24 @@ export default function UpdateTaskScreen() {
                     <TouchableOpacity onPress={pickFile} className="bg-black p-4 rounded-xl mb-4 active:opacity-80">
                         <Text className="text-yellow-400 font-bold text-center">Attach File</Text>
                     </TouchableOpacity>
-                    {file && <Text className="text-black mb-2">Selected: {file.name}</Text>}
+                    {/* {file && <Text className="text-black mb-2">Selected: {file.name}</Text>} */}
+                    {file && (
+                        <View className="flex-row justify-between items-center mt-2 bg-white p-3 rounded-lg border border-gray-300 mb-2">
+                            <Text className="text-black flex-1" numberOfLines={1}>
+                                {file.name}
+                            </Text>
+                            <TouchableOpacity onPress={() => setFile(null)}>
+                                <Ionicons name="trash" size={24} color="red" />
+                            </TouchableOpacity>
+                        </View>
+                    )}
 
-                    <TouchableOpacity onPress={handleUpdate} className="bg-yellow-500 p-4 rounded-xl active:opacity-80">
+
+                    <TouchableOpacity onPress={handleUpdate} disabled={!isFieldChanged}
+                        // className="bg-yellow-500 p-4 rounded-xl active:opacity-80"
+                        className={`p-4 rounded-xl active:opacity-80 ${isFieldChanged ? 'bg-yellow-500' : 'bg-gray-300'}`}
+
+                    >
                         <Text className="text-black font-bold text-center text-base">Update Task</Text>
                     </TouchableOpacity>
                 </ScrollView>
