@@ -1101,7 +1101,8 @@ export default function UpdateTaskScreen() {
                             )}
 
                             <View className="bg-white rounded-xl border border-gray-300 mb-4">
-                                <Picker selectedValue={priority} onValueChange={(val) => setPriority(val)}>
+                                <Picker selectedValue={priority} onValueChange={(val) => setPriority(val)}
+                                    style={{ color: colorScheme === 'dark' ? '#000' : '#000' }}>
                                     <Picker.Item label="Select Priority" value="" />
                                     <Picker.Item label="Low" value="Low" />
                                     <Picker.Item label="Medium" value="Medium" />
@@ -1110,7 +1111,8 @@ export default function UpdateTaskScreen() {
                             </View>
 
                             <View className="bg-white rounded-xl border border-gray-300 mb-4">
-                                <Picker selectedValue={assignedTo} onValueChange={(val) => setAssignedTo(val)}>
+                                <Picker selectedValue={assignedTo} onValueChange={(val) => setAssignedTo(val)}
+                                    style={{ color: colorScheme === 'dark' ? '#000' : '#000' }}>
                                     <Picker.Item label="Assign To" value="" />
                                     {users.filter((u) => u !== task?.created_by).map((u, idx) => (
                                         <Picker.Item label={u} value={u} key={idx} />
@@ -1122,7 +1124,8 @@ export default function UpdateTaskScreen() {
 
                     {isAssignee && (
                         <View className="bg-white rounded-xl border border-gray-300 mb-4">
-                            <Picker selectedValue={status} onValueChange={(val) => setStatus(val)}>
+                            <Picker selectedValue={status} onValueChange={(val) => setStatus(val)}
+                                style={{ color: colorScheme === 'dark' ? '#000' : '#000' }}>
                                 <Picker.Item label="Select Status" value="" />
                                 <Picker.Item label="Pending" value="Pending" />
                                 <Picker.Item label="In Progress" value="In Progress" />
@@ -1145,7 +1148,8 @@ export default function UpdateTaskScreen() {
                         placeholder="Comment"
                         multiline
                         numberOfLines={3}
-                        className={`bg-white p-4 rounded-xl border border-gray-300 mb-4 text-base h-32 ${isDarkMode ? 'text-yellow-400' : 'text-black'}`}
+                        className={`bg-white p-4 rounded-xl border border-gray-300 mb-4 text-base h-32 ${isDarkMode ? 'text-black' : 'text-black'}`}
+                        style={{ color: colorScheme === 'dark' ? '#000' : '#000' }}
                     />
 
                     <View className="mb-4">

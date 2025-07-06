@@ -265,7 +265,7 @@ const TaskProgress = () => {
                 </View>
             )}
 
-            {updates.length > 0 ? (
+            {updates.length > 1 ? (
                 [...updates]
                     .filter((u) => !u.is_system_generated)
                     .reverse()
