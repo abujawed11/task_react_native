@@ -116,6 +116,9 @@ interface NotificationContextType {
     unread: number;
     fetchNotifications: () => void;
     markAsRead: (id: string) => void;
+    setRefreshing: (val: boolean) => void;
+    //refreshing: (val: boolean) => void;
+    refreshing: boolean; // ✅ ADD THIS
 }
 
 export const NotificationContext = createContext<NotificationContextType>({
@@ -123,6 +126,9 @@ export const NotificationContext = createContext<NotificationContextType>({
     unread: 0,
     fetchNotifications: () => { },
     markAsRead: () => { },
+    setRefreshing: (val: boolean) => false,
+    //refreshing: (val: boolean) => false,
+    refreshing: false // ✅ ADD THIS
 });
 
 export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({
@@ -132,6 +138,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({
     const [notifications, setNotifications] = useState<Notification[]>([]);
     const [unread, setUnread] = useState(0);
     const [appState, setAppState] = useState<AppStateStatus>(AppState.currentState);
+    const [refreshing, setRefreshing] = useState(false);
     //   const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
     const [intervalId, setIntervalId] = useState<number | null>(null); // ✅ Correct
 
@@ -150,6 +157,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({
             const data = Array.isArray(res.data) ? res.data : [];
             setNotifications(data);
             setUnread(data.filter((n: Notification) => !n.is_read).length);
+            setRefreshing(false); // ✅ THIS MUST BE CALLED
 
             retryCount = 0; // reset on success
         } catch (err) {
@@ -219,7 +227,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({
 
     return (
         <NotificationContext.Provider
-            value={{ notifications, unread, fetchNotifications, markAsRead }}
+            value={{ notifications, unread, fetchNotifications, markAsRead, setRefreshing, refreshing }}
         >
             {children}
         </NotificationContext.Provider>

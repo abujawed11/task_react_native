@@ -10,6 +10,8 @@ import { FontAwesome5, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { Audio } from 'expo-av';
+import { RefreshControl } from 'react-native';
+
 
 const TaskProgress = () => {
     // const { taskId } = useLocalSearchParams<{ taskId: string }>();
@@ -21,47 +23,48 @@ const TaskProgress = () => {
     const [updates, setUpdates] = useState<TaskUpdate[]>([]);
     const [loading, setLoading] = useState(true);
     const colorScheme = useColorScheme();
+    const [refreshing, setRefreshing] = useState(false);
 
-        const [sound, setSound] = useState<Audio.Sound | null>(null);
-        const [isPlaying, setIsPlaying] = useState(false);
+    const [sound, setSound] = useState<Audio.Sound | null>(null);
+    const [isPlaying, setIsPlaying] = useState(false);
 
-            const handlePlayPause = async () => {
-                try {
-                    if (!sound) {
-                        const { sound: newSound, status } = await Audio.Sound.createAsync(
-                            { uri: `${BASE_URL}/${task?.audio_path}` },
-                            { shouldPlay: false } // Don’t auto-play
-                        );
-        
-                        await newSound.setIsLoopingAsync(false); // ❗ Important
-        
-                        newSound.setOnPlaybackStatusUpdate((status) => {
-                            if ('isLoaded' in status && status.isLoaded && status.didJustFinish) {
-                                setIsPlaying(false);
-                                newSound.unloadAsync(); // Unload the sound when finished
-                                setSound(null); // Reset sound state
-                            }
-                        });
-        
-                        setSound(newSound);
-                        await newSound.playAsync();
-                        setIsPlaying(true);
-                    } else {
-                        const status = await sound.getStatusAsync();
-                        if ('isLoaded' in status && status.isLoaded) {
-                            if (status.isPlaying) {
-                                await sound.pauseAsync();
-                                setIsPlaying(false);
-                            } else {
-                                await sound.playAsync();
-                                setIsPlaying(true);
-                            }
-                        }
+    const handlePlayPause = async () => {
+        try {
+            if (!sound) {
+                const { sound: newSound, status } = await Audio.Sound.createAsync(
+                    { uri: `${BASE_URL}/${task?.audio_path}` },
+                    { shouldPlay: false } // Don’t auto-play
+                );
+
+                await newSound.setIsLoopingAsync(false); // ❗ Important
+
+                newSound.setOnPlaybackStatusUpdate((status) => {
+                    if ('isLoaded' in status && status.isLoaded && status.didJustFinish) {
+                        setIsPlaying(false);
+                        newSound.unloadAsync(); // Unload the sound when finished
+                        setSound(null); // Reset sound state
                     }
-                } catch (error) {
-                    console.error('Error playing/pausing audio:', error);
+                });
+
+                setSound(newSound);
+                await newSound.playAsync();
+                setIsPlaying(true);
+            } else {
+                const status = await sound.getStatusAsync();
+                if ('isLoaded' in status && status.isLoaded) {
+                    if (status.isPlaying) {
+                        await sound.pauseAsync();
+                        setIsPlaying(false);
+                    } else {
+                        await sound.playAsync();
+                        setIsPlaying(true);
+                    }
                 }
-            };
+            }
+        } catch (error) {
+            console.error('Error playing/pausing audio:', error);
+        }
+    };
 
 
     const getPriorityIcon = (priority: string) => {
@@ -133,35 +136,43 @@ const TaskProgress = () => {
         }
     };
 
+    const fetchTaskProgress = async () => {
+        try {
+            // console.log('Fetching progress for task:', taskId); // ✅ Add here
+
+            const token = await AsyncStorage.getItem('token');
+            //console.log('Token:', token); // ✅ Add here
+
+            const response = await axios.get(`${BASE_URL}/api/tasks/${taskId}/progress`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+
+            //console.log('Task response:', response.data); // ✅ Log full response
+
+            setTask(response.data.task);
+            setUpdates(response.data.updates || []);
+        } catch (error: any) {
+            console.error('Error fetching task progress:', error?.response?.data || error?.message); // ✅ Add here
+        } finally {
+            setLoading(false);
+            setRefreshing(false); // ✅ THIS MUST BE CALLED
+        }
+    };
+
+    const onRefresh = () => {
+        setRefreshing(true);
+        fetchTaskProgress();
+    };
+
+
     useEffect(() => {
-        const fetchTaskProgress = async () => {
-            try {
-                // console.log('Fetching progress for task:', taskId); // ✅ Add here
-
-                const token = await AsyncStorage.getItem('token');
-                //console.log('Token:', token); // ✅ Add here
-
-                const response = await axios.get(`${BASE_URL}/api/tasks/${taskId}/progress`, {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
-
-                //console.log('Task response:', response.data); // ✅ Log full response
-
-                setTask(response.data.task);
-                setUpdates(response.data.updates || []);
-            } catch (error: any) {
-                console.error('Error fetching task progress:', error?.response?.data || error?.message); // ✅ Add here
-            } finally {
-                setLoading(false);
-            }
-        };
 
         if (taskId) {
             fetchTaskProgress();
         } else {
             console.warn('No taskId found from route params!'); // ✅ Additional guard
         }
-    }, [taskId,BASE_URL]);
+    }, [taskId]);
 
 
     if (loading) {
@@ -173,7 +184,15 @@ const TaskProgress = () => {
     }
 
     return (
-        <ScrollView className="flex-1 bg-yellow-50 p-4">
+        <ScrollView className="flex-1 bg-yellow-50 p-4"
+            refreshControl={
+                <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
+                    colors={['#facc15']} // Android spinner color
+                    tintColor="#facc15"  // iOS spinner color
+                />
+            }>
             {/* <Button title="← Back" color="black" onPress={() => router.back()} /> */}
 
             {/* <Text className="text-center text-2xl font-bold text-black mt-4 mb-6">Task Progress</Text> */}
@@ -219,13 +238,13 @@ const TaskProgress = () => {
                                 //     <Text className="text-blue-500" onPress={() => Linking.openURL(`${BASE_URL}/${task.audio_path}`)}>Play Audio</Text>
                                 // </View>
                                 <View className="mt-2">
-                                                        <Text className="text-black font-medium mb-1">Audio Note:</Text>
-                                                        <Button
-                                                            title={isPlaying ? 'Pause Audio' : 'Play Audio'}
-                                                            onPress={handlePlayPause}
-                                                            color="#facc15"
-                                                        />
-                                                    </View>
+                                    <Text className="text-black font-medium mb-1">Audio Note:</Text>
+                                    <Button
+                                        title={isPlaying ? 'Pause Audio' : 'Play Audio'}
+                                        onPress={handlePlayPause}
+                                        color="#facc15"
+                                    />
+                                </View>
                             )}
 
                             {task.file_path && (

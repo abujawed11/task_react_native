@@ -2,7 +2,7 @@ import { useAuth } from '@/context/AuthContext';
 import { NotificationContext } from '@/context/NotificationContext';
 import { useFocusEffect, useRouter } from 'expo-router';
 import React, { useCallback, useContext, useState } from 'react';
-import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { RefreshControl, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 
 const formatDateTime = (dateStr?: string | null) => {
   if (!dateStr) return 'N/A';
@@ -16,10 +16,11 @@ const formatDateTime = (dateStr?: string | null) => {
 };
 
 const NotificationScreen = () => {
-  const { notifications, markAsRead,fetchNotifications } = useContext(NotificationContext);
+  const { notifications, markAsRead, fetchNotifications, setRefreshing, refreshing } = useContext(NotificationContext);
   const [hiddenNotificationIds, setHiddenNotificationIds] = useState<string[]>([]);
   const router = useRouter();
   const { user, loading } = useAuth();
+
 
 
   // 👇 Fetch when screen comes into focus
@@ -31,6 +32,10 @@ const NotificationScreen = () => {
     }, [user, loading])
   );
 
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchNotifications();
+  };
   const handleMarkAsRead = (id: string) => {
     markAsRead(id);
     setHiddenNotificationIds((prev) => [...prev, id]);
@@ -58,7 +63,15 @@ const NotificationScreen = () => {
   );
 
   return (
-    <ScrollView className="flex-1 bg-yellow-100 px-4 pt-6 pb-10">
+    <ScrollView className="flex-1 bg-yellow-100 px-4 pt-6 pb-10"
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+          colors={['#facc15']} // Android spinner color
+          tintColor="#facc15"  // iOS spinner color
+        />
+      }>
       <View className="flex-row justify-between items-center mb-6">
         {/* <TouchableOpacity
           onPress={() => router.back()}

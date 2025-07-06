@@ -353,6 +353,7 @@ export default function LoginScreen() {
       const res = await axios.post(`${BASE_URL}/api/auth/login`, {
         username,
         password,
+        device: 'mobile',
       });
 
       const { user, token } = res.data;
