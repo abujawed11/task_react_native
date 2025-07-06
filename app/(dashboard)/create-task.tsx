@@ -1765,6 +1765,8 @@ import React, { useEffect, useState } from 'react';
 import {
   Alert,
   Animated,
+  KeyboardAvoidingView,
+  Platform,
   ScrollView,
   Text,
   TextInput,
@@ -2012,279 +2014,296 @@ const CreateTaskScreen: React.FC = () => {
       : 'absolute left-3 text-gray-500 text-base text-yellow-700 font-semibold';
 
   return (
-    <ScrollView className="bg-yellow-100 min-h-screen p-4">
-      <View className="flex-1 w-full max-w-md mx-auto">
-        <View className="mb-4 relative">
-          <TextInput
-            value={title}
-            onChangeText={(text) => {
-              setTitle(text);
-              animateLabel(titleAnim, text ? 1 : 0);
-            }}
-            onFocus={() => animateLabel(titleAnim, 1)}
-            onBlur={() => animateLabel(titleAnim, title ? 1 : 0)}
-            className="bg-white p-4 pt-6 rounded-xl border border-gray-300 text-base"
-            style={{ color: isDark ? '#000' : '#000' }}
-          />
-          <Animated.Text
-            className={inputClass}
-            style={{
-              transform: [
-                {
-                  translateY: titleAnim.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [16, 0],
-                  }),
-                },
-                {
-                  scale: titleAnim.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [1, 0.8],
-                  }),
-                },
-              ],
-            }}
-          >
-            Title
-          </Animated.Text>
-        </View>
 
-        <View className="mb-4 relative">
-          <TextInput
-            value={description}
-            onChangeText={(text) => {
-              setDescription(text);
-              animateLabel(descAnim, text ? 1 : 0);
-            }}
-            onFocus={() => animateLabel(descAnim, 1)}
-            onBlur={() => animateLabel(descAnim, description ? 1 : 0)}
-            multiline
-            numberOfLines={6}
-            className="bg-white p-4 pt-6 rounded-xl border border-gray-300 text-base h-32"
-            style={{ color: isDark ? '#000' : '#000' }}
-          />
-          <Animated.Text
-            className={inputClass}
-            style={{
-              transform: [
-                {
-                  translateY: descAnim.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [16, 0],
-                  }),
-                },
-                {
-                  scale: descAnim.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [1, 0.8],
-                  }),
-                },
-              ],
-            }}
-          >
-            Description
-          </Animated.Text>
-        </View>
+    <View style={{ flex: 1 }} className="bg-yellow-100">
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}
+      >
+        <ScrollView contentContainerStyle={{
+          padding: 20,
+          paddingBottom: 40,
+          flexGrow: 1,
+          paddingTop: 30,
+          justifyContent: 'flex-start',
+        }}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}>
+          <View className="flex-1 w-full max-w-md mx-auto">
+            <View className="mb-4 relative">
+              <TextInput
+                value={title}
+                onChangeText={(text) => {
+                  setTitle(text);
+                  animateLabel(titleAnim, text ? 1 : 0);
+                }}
+                onFocus={() => animateLabel(titleAnim, 1)}
+                onBlur={() => animateLabel(titleAnim, title ? 1 : 0)}
+                className="bg-white p-4 pt-6 rounded-xl border border-gray-300 text-base"
+                style={{ color: isDark ? '#000' : '#000' }}
+              />
+              <Animated.Text
+                className={inputClass}
+                style={{
+                  transform: [
+                    {
+                      translateY: titleAnim.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [16, 0],
+                      }),
+                    },
+                    {
+                      scale: titleAnim.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [1, 0.8],
+                      }),
+                    },
+                  ],
+                }}
+              >
+                Title
+              </Animated.Text>
+            </View>
 
-        <View className="mb-4 relative">
-          <View className="bg-white rounded-xl border border-gray-300 pt-4">
-            <Picker
-              selectedValue={priority}
-              onValueChange={(val) => {
-                setPriority(val);
-                animateLabel(priorityAnim, val ? 1 : 0);
-              }}
-              dropdownIconColor={isDark ? '#000' : '#000'}
-              // style={{ color: isDark ? '#000' : '#000' }}
-              style={{ color: priority ? (isDark ? '#000' : '#000') : (isDark ? '#999' : '#999') }}
+            <View className="mb-4 relative">
+              <TextInput
+                value={description}
+                onChangeText={(text) => {
+                  setDescription(text);
+                  animateLabel(descAnim, text ? 1 : 0);
+                }}
+                onFocus={() => animateLabel(descAnim, 1)}
+                onBlur={() => animateLabel(descAnim, description ? 1 : 0)}
+                multiline
+                numberOfLines={6}
+                className="bg-white p-4 pt-6 rounded-xl border border-gray-300 text-base h-32"
+                style={{ color: isDark ? '#000' : '#000' }}
+              />
+              <Animated.Text
+                className={inputClass}
+                style={{
+                  transform: [
+                    {
+                      translateY: descAnim.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [16, 0],
+                      }),
+                    },
+                    {
+                      scale: descAnim.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [1, 0.8],
+                      }),
+                    },
+                  ],
+                }}
+              >
+                Description
+              </Animated.Text>
+            </View>
+
+            <View className="mb-4 relative">
+              <View className="bg-white rounded-xl border border-gray-300 pt-4">
+                <Picker
+                  selectedValue={priority}
+                  onValueChange={(val) => {
+                    setPriority(val);
+                    animateLabel(priorityAnim, val ? 1 : 0);
+                  }}
+                  dropdownIconColor={isDark ? '#000' : '#000'}
+                  // style={{ color: isDark ? '#000' : '#000' }}
+                  style={{ color: priority ? (isDark ? '#000' : '#000') : (isDark ? '#999' : '#999') }}
+                >
+                  <Picker.Item label="Select Priority" value="" />
+                  <Picker.Item label="Low" value="Low" />
+                  <Picker.Item label="Medium" value="Medium" />
+                  <Picker.Item label="High" value="High" />
+                </Picker>
+              </View>
+              <Animated.Text
+                className={inputClass}
+                style={{
+                  transform: [
+                    {
+                      translateY: priorityAnim.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [16, 0],
+                      }),
+                    },
+                    {
+                      scale: priorityAnim.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [1, 0.8],
+                      }),
+                    },
+                  ],
+                }}
+              >
+                Priority
+              </Animated.Text>
+            </View>
+
+            <View className="mb-4 relative">
+              <View className="bg-white rounded-xl border border-gray-300 pt-4">
+                <Picker
+                  selectedValue={assignedTo}
+                  onValueChange={(val) => {
+                    setAssignedTo(val);
+                    animateLabel(assignedToAnim, val ? 1 : 0);
+                  }}
+                  dropdownIconColor={isDark ? '#000' : '#000'}
+                  // style={{ color: isDark ? '#000' : '#000' }}
+                  style={{
+                    color: assignedTo ? (isDark ? '#000' : '#000') : (isDark ? '#999' : '#999'), // 👈 Gray if not selected
+                  }}
+                >
+                  <Picker.Item label="Select Assignee" value="" />
+                  {users.map((u, idx) => (
+                    <Picker.Item key={idx} label={u} value={u} />
+                  ))}
+                </Picker>
+              </View>
+              <Animated.Text
+                className={inputClass}
+                style={{
+                  transform: [
+                    {
+                      translateY: assignedToAnim.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [16, 0],
+                      }),
+                    },
+                    {
+                      scale: assignedToAnim.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [1, 0.8],
+                      }),
+                    },
+                  ],
+                }}
+              >
+                Assign To
+              </Animated.Text>
+            </View>
+
+            <View className="mb-4 relative">
+              {/* <View className="bg-white rounded-xl border border-gray-300 pt-4"> */}
+              <TouchableOpacity
+                onPress={() => {
+                  setShowDatePicker(true);
+                  animateLabel(dueDateAnim, 1);
+                }}
+                className="flex-row items-center bg-white p-4 pt-8 rounded-xl border border-gray-300"
+                activeOpacity={0.8}
+              >
+                <Text
+                  className="flex-1 text-base"
+                  style={{ color: dueDate ? (isDark ? '#000' : '#000') : (isDark ? '#999' : '#999') }}
+                >
+                  {dueDate ? dueDate.toLocaleDateString() : 'Select Due Date'}
+                </Text>
+                <Ionicons name="calendar-outline" size={20} color={isDark ? '#000' : '#000'} />
+              </TouchableOpacity>
+              {/* </View> */}
+              <Animated.Text
+                // className={inputClass}
+                className={`${inputClass}`}
+                style={{
+                  transform: [
+                    {
+                      translateY: dueDateAnim.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [16, 0],
+                      }),
+                    },
+                    {
+                      scale: dueDateAnim.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [1, 0.8],
+                      }),
+                    },
+                  ],
+                }}
+              >
+                Due Date
+              </Animated.Text>
+            </View>
+
+            {showDatePicker && (
+              <DateTimePicker
+                value={dueDate || new Date()}
+                mode="date"
+                display="default"
+                onChange={(e, selectedDate) => {
+                  setShowDatePicker(false);
+                  if (selectedDate) {
+                    setDueDate(selectedDate);
+                    animateLabel(dueDateAnim, 1);
+                  } else {
+                    animateLabel(dueDateAnim, dueDate ? 1 : 0);
+                  }
+                }}
+              />
+            )}
+
+            <TouchableOpacity
+              onPress={handleFilePick}
+              className="bg-black p-4 rounded-xl mb-4 active:opacity-80"
             >
-              <Picker.Item label="Select Priority" value="" />
-              <Picker.Item label="Low" value="Low" />
-              <Picker.Item label="Medium" value="Medium" />
-              <Picker.Item label="High" value="High" />
-            </Picker>
-          </View>
-          <Animated.Text
-            className={inputClass}
-            style={{
-              transform: [
-                {
-                  translateY: priorityAnim.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [16, 0],
-                  }),
-                },
-                {
-                  scale: priorityAnim.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [1, 0.8],
-                  }),
-                },
-              ],
-            }}
-          >
-            Priority
-          </Animated.Text>
-        </View>
+              <Text className="text-yellow-400 font-bold text-center">Attach File</Text>
+            </TouchableOpacity>
 
-        <View className="mb-4 relative">
-          <View className="bg-white rounded-xl border border-gray-300 pt-4">
-            <Picker
-              selectedValue={assignedTo}
-              onValueChange={(val) => {
-                setAssignedTo(val);
-                animateLabel(assignedToAnim, val ? 1 : 0);
-              }}
-              dropdownIconColor={isDark ? '#000' : '#000'}
-              // style={{ color: isDark ? '#000' : '#000' }}
-              style={{
-                color: assignedTo ? (isDark ? '#000' : '#000') : (isDark ? '#999' : '#999'), // 👈 Gray if not selected
-              }}
+            {file && (
+              <View className="flex-row justify-between items-center mt-2 bg-white p-3 rounded-lg border border-gray-300 mb-2">
+                <Text className="flex-1" style={{ color: isDark ? '#000' : '#000' }} numberOfLines={1}>
+                  {file.name}
+                </Text>
+                <TouchableOpacity onPress={() => setFile(null)}>
+                  <Ionicons name="trash" size={24} color="red" />
+                </TouchableOpacity>
+              </View>
+            )}
+
+            <View className="mb-4">
+              <TouchableOpacity
+                onPress={handleAudioRecord}
+                className={`p-4 rounded-xl active:opacity-80 ${isRecording ? 'bg-red-600' : 'bg-black'}`}
+              >
+                <Text className="text-yellow-400 font-bold text-center">
+                  {isRecording ? 'Stop Recording' : 'Record Audio'}
+                </Text>
+              </TouchableOpacity>
+
+              {audioUri && (
+                <View className="flex-row justify-between items-center mt-2 bg-white p-3 rounded-lg border border-gray-300">
+                  <Text className="flex-1" style={{ color: isDark ? '#000' : '#000' }} numberOfLines={1}>
+                    Audio Recorded
+                  </Text>
+                  <TouchableOpacity
+                    onPress={isPlaying ? handleStopAudio : handlePlayAudio}
+                    className="mr-2"
+                    disabled={isPlaying && !sound}
+                  >
+                    <Ionicons name={isPlaying ? 'pause' : 'play'} size={24} color="#22c55e" />
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={handleDeleteAudio}>
+                    <Ionicons name="trash" size={24} color="red" />
+                  </TouchableOpacity>
+                </View>
+              )}
+            </View>
+
+            <TouchableOpacity
+              onPress={handleSubmit}
+              className="bg-yellow-500 p-4 rounded-xl active:opacity-80"
             >
-              <Picker.Item label="Select Assignee" value="" />
-              {users.map((u, idx) => (
-                <Picker.Item key={idx} label={u} value={u} />
-              ))}
-            </Picker>
-          </View>
-          <Animated.Text
-            className={inputClass}
-            style={{
-              transform: [
-                {
-                  translateY: assignedToAnim.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [16, 0],
-                  }),
-                },
-                {
-                  scale: assignedToAnim.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [1, 0.8],
-                  }),
-                },
-              ],
-            }}
-          >
-            Assign To
-          </Animated.Text>
-        </View>
-
-        <View className="mb-4 relative">
-          {/* <View className="bg-white rounded-xl border border-gray-300 pt-4"> */}
-          <TouchableOpacity
-            onPress={() => {
-              setShowDatePicker(true);
-              animateLabel(dueDateAnim, 1);
-            }}
-            className="flex-row items-center bg-white p-4 pt-8 rounded-xl border border-gray-300"
-            activeOpacity={0.8}
-          >
-            <Text
-              className="flex-1 text-base"
-              style={{ color: dueDate ? (isDark ? '#000' : '#000') : (isDark ? '#999' : '#999') }}
-            >
-              {dueDate ? dueDate.toLocaleDateString() : 'Select Due Date'}
-            </Text>
-            <Ionicons name="calendar-outline" size={20} color={isDark ? '#000' : '#000'} />
-          </TouchableOpacity>
-          {/* </View> */}
-          <Animated.Text
-            // className={inputClass}
-            className={`${inputClass}`}
-            style={{
-              transform: [
-                {
-                  translateY: dueDateAnim.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [16, 0],
-                  }),
-                },
-                {
-                  scale: dueDateAnim.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [1, 0.8],
-                  }),
-                },
-              ],
-            }}
-          >
-            Due Date
-          </Animated.Text>
-        </View>
-
-        {showDatePicker && (
-          <DateTimePicker
-            value={dueDate || new Date()}
-            mode="date"
-            display="default"
-            onChange={(e, selectedDate) => {
-              setShowDatePicker(false);
-              if (selectedDate) {
-                setDueDate(selectedDate);
-                animateLabel(dueDateAnim, 1);
-              } else {
-                animateLabel(dueDateAnim, dueDate ? 1 : 0);
-              }
-            }}
-          />
-        )}
-
-        <TouchableOpacity
-          onPress={handleFilePick}
-          className="bg-black p-4 rounded-xl mb-4 active:opacity-80"
-        >
-          <Text className="text-yellow-400 font-bold text-center">Attach File</Text>
-        </TouchableOpacity>
-
-        {file && (
-          <View className="flex-row justify-between items-center mt-2 bg-white p-3 rounded-lg border border-gray-300 mb-2">
-            <Text className="flex-1" style={{ color: isDark ? '#000' : '#000' }} numberOfLines={1}>
-              {file.name}
-            </Text>
-            <TouchableOpacity onPress={() => setFile(null)}>
-              <Ionicons name="trash" size={24} color="red" />
+              <Text className="text-black font-bold text-center text-base">Create Task</Text>
             </TouchableOpacity>
           </View>
-        )}
-
-        <View className="mb-4">
-          <TouchableOpacity
-            onPress={handleAudioRecord}
-            className={`p-4 rounded-xl active:opacity-80 ${isRecording ? 'bg-red-600' : 'bg-black'}`}
-          >
-            <Text className="text-yellow-400 font-bold text-center">
-              {isRecording ? 'Stop Recording' : 'Record Audio'}
-            </Text>
-          </TouchableOpacity>
-
-          {audioUri && (
-            <View className="flex-row justify-between items-center mt-2 bg-white p-3 rounded-lg border border-gray-300">
-              <Text className="flex-1" style={{ color: isDark ? '#000' : '#000' }} numberOfLines={1}>
-                Audio Recorded
-              </Text>
-              <TouchableOpacity
-                onPress={isPlaying ? handleStopAudio : handlePlayAudio}
-                className="mr-2"
-                disabled={isPlaying && !sound}
-              >
-                <Ionicons name={isPlaying ? 'pause' : 'play'} size={24} color="#22c55e" />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={handleDeleteAudio}>
-                <Ionicons name="trash" size={24} color="red" />
-              </TouchableOpacity>
-            </View>
-          )}
-        </View>
-
-        <TouchableOpacity
-          onPress={handleSubmit}
-          className="bg-yellow-500 p-4 rounded-xl active:opacity-80"
-        >
-          <Text className="text-black font-bold text-center text-base">Create Task</Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </View>
   );
 };
 

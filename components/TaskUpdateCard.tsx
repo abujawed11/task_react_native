@@ -151,17 +151,19 @@
 
 import { TaskUpdate } from '@/types/task.types';
 import { BASE_URL } from '@/utils/constants';
-import { Feather, MaterialIcons } from '@expo/vector-icons';
+import { Feather, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { Audio } from 'expo-av';
-import React, { useEffect, useState } from 'react';
+import React, { JSX, useEffect, useState } from 'react';
 import {
     Alert, Button,
     Image,
     Linking,
     Text,
     TouchableOpacity,
-    View
+    View,
+    useColorScheme
 } from 'react-native';
+// import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 
 type Props = {
     update: TaskUpdate;
@@ -203,65 +205,8 @@ const getFileEmoji = (ext: string | undefined) => {
 const TaskUpdateCard: React.FC<Props> = ({ update }) => {
     const [sound, setSound] = useState<Audio.Sound | null>(null);
     const [isPlaying, setIsPlaying] = useState(false);
-
-    //   const handlePlayPause = async () => {
-    //     if (!sound) {
-    //       const { sound: newSound } = await Audio.Sound.createAsync(
-    //         { uri: `${BASE_URL}/${update.audio_path}` },
-    //         { shouldPlay: true }
-    //       );
-    //       setSound(newSound);
-    //       setIsPlaying(true);
-    //     } else {
-    //       const status = await sound.getStatusAsync();
-    //       if ('isPlaying' in status && status.isPlaying) {
-    //         await sound.pauseAsync();
-    //         setIsPlaying(false);
-    //       } else {
-    //         await sound.playAsync();
-    //         setIsPlaying(true);
-    //       }
-    //     }
-    //   };
-
-    // const handlePlayPause = async () => {
-    //     try {
-    //         if (!sound) {
-    //             console.log('Creating and playing new audio...');
-    //             const { sound: newSound } = await Audio.Sound.createAsync(
-    //                 { uri: `${BASE_URL}/${update.audio_path}` },
-    //                 { shouldPlay: true }
-    //             );
-
-    //             setSound(newSound);
-    //             setIsPlaying(true);
-
-    //             newSound.setOnPlaybackStatusUpdate((status) => {
-    //                 if (!status.isLoaded) return;
-
-    //                 if (status.didJustFinish) {
-    //                     console.log('Audio finished playing');
-    //                     setIsPlaying(false);
-    //                     newSound.unloadAsync(); // Unload automatically
-    //                     setSound(null);
-    //                 }
-    //             });
-    //         } else {
-    //             const status = await sound.getStatusAsync();
-    //             if ('isPlaying' in status && status.isPlaying) {
-    //                 console.log('Pausing audio...');
-    //                 await sound.pauseAsync();
-    //                 setIsPlaying(false);
-    //             } else {
-    //                 console.log('Resuming audio...');
-    //                 await sound.playAsync();
-    //                 setIsPlaying(true);
-    //             }
-    //         }
-    //     } catch (error) {
-    //         console.error('Error handling audio play/pause:', error);
-    //     }
-    // };
+    const colorScheme = useColorScheme();
+    const isDark = colorScheme === 'dark';
 
     const handlePlayPause = async () => {
         try {
@@ -301,9 +246,18 @@ const TaskUpdateCard: React.FC<Props> = ({ update }) => {
         }
     };
 
-
-
-
+    const getStatusIcon = (status: string): JSX.Element | null => {
+        switch (status) {
+            case 'Pending':
+                return <Ionicons name="time-outline" size={20} color="gray" />;
+            case 'In Progress':
+                return <Ionicons name="time-outline" size={20} color="blue" />;
+            case 'Completed':
+                return <MaterialIcons name="check-circle" size={20} color="green" />;
+            default:
+                return null;
+        }
+    };
 
     useEffect(() => {
         return () => {
@@ -325,16 +279,20 @@ const TaskUpdateCard: React.FC<Props> = ({ update }) => {
         }
     };
 
+    const inputClass: string =
+        isDark
+            ? 'text-black'
+            : 'text-black';
 
     // console.log('Image URL:', `${BASE_URL}/${update.file_path}`);
     return (
         <View className="mb-6 border border-yellow-500 rounded-lg bg-white shadow-md">
             {/* Header */}
             <View className="flex flex-row justify-between items-center bg-yellow-100 p-4 rounded-t-lg border-b border-yellow-500">
-                <Text className="text-sm text-black font-semibold">
+                <Text className={`text-sm  font-semibold ${inputClass}`}>
                     <Feather name="user" size={16} color="orange" /> {update.updated_by}
                 </Text>
-                <Text className="text-xs text-black">
+                <Text className={`text-xs ${inputClass}`}>
                     <Feather name="calendar" size={14} color="orange" /> {formatDate(update.updated_at)}
                 </Text>
             </View>
@@ -342,49 +300,77 @@ const TaskUpdateCard: React.FC<Props> = ({ update }) => {
             <View className="p-4 space-y-2">
                 {update.status && (
                     <View className="bg-yellow-50 border-l-4 border-yellow-500 p-3 rounded">
-                        <Text className="text-black font-medium">Status Changed: {update.status}</Text>
+                        {/* <Text className="text-black font-medium">Status Changed: {update.status}</Text> */}
+                        
+                        <Text className={`${inputClass} ml-2`}>
+                            <Text className={`${inputClass} font-bold`}>Status Changed: </Text> {update.status} 
+                             {getStatusIcon(update.status)}
+                            
+                        </Text>
                     </View>
                 )}
 
                 {update.title && (
                     <View className="bg-yellow-50 border-l-4 border-yellow-500 p-3 rounded">
-                        <Text className="text-black font-medium">Title Changed: {update.title}</Text>
+                        {/* <Text className="text-black font-medium">Title Changed: {update.title}</Text> */}
+                        <Text className={`${inputClass} ml-2`}>
+                            <Text className={`${inputClass} font-bold`}>Title Changed: </Text> {update.title}
+                        </Text>
                     </View>
                 )}
 
                 {update.description && (
                     <View className="bg-yellow-50 border-l-4 border-yellow-500 p-3 rounded">
-                        <Text className="text-black font-medium">Description Changed: {update.description}</Text>
+                        {/* <Text className="text-black font-medium">Description Changed: {update.description}</Text> */}
+                        <Text className={`${inputClass} ml-2`}>
+                            <Text className={`${inputClass} font-bold`}>Description Changed:</Text> {update.description}
+                        </Text>
                     </View>
                 )}
 
                 {update.priority && (
                     <View className="bg-yellow-50 border-l-4 border-yellow-500 p-3 rounded flex-row items-center">
                         <MaterialIcons name="priority-high" size={16} color="orange" />
-                        <Text className="text-black ml-2">Priority Changed: {update.priority}</Text>
+                        {/* <Text className="text-black ml-2">Priority Changed: {update.priority}</Text> */}
+                        <Text className={`${inputClass} ml-2`}>
+                            <Text className={`${inputClass} font-bold`}>Priority Changed:</Text> {update.priority}
+                        </Text>
                     </View>
                 )}
 
                 {update.due_date && (
+                    // <View className="bg-yellow-50 border-l-4 border-yellow-500 p-3 rounded flex-row items-center">
+                    //     <Feather name="calendar" size={16} color="orange" />
+                    //     <Text className="text-black ml-2">Due Date: {formatDate(update.due_date)}</Text>
+                    // </View>
                     <View className="bg-yellow-50 border-l-4 border-yellow-500 p-3 rounded flex-row items-center">
                         <Feather name="calendar" size={16} color="orange" />
-                        <Text className="text-black ml-2">Due Date: {formatDate(update.due_date)}</Text>
+                        <Text className={`${inputClass} ml-2`}>
+                            <Text className={`${inputClass} font-bold`}>Due Date Changed:</Text> {formatDate(update.due_date)}
+                        </Text>
                     </View>
+
                 )}
 
                 {update.comment && (
+                    // <View className="bg-yellow-50 border-l-4 border-yellow-500 p-3 rounded">
+                    //     <Text className="text-black">Comment: {update.comment}</Text>
+                    // </View>
                     <View className="bg-yellow-50 border-l-4 border-yellow-500 p-3 rounded">
-                        <Text className="text-black">Comment: {update.comment}</Text>
+                        <Text className={inputClass}>
+                            <Text className={`${inputClass} font-bold`}>Comment:</Text> {update.comment}
+                        </Text>
                     </View>
+
                 )}
 
                 {update.assigned_by && update.assigned_to && (
                     <View className="bg-yellow-50 border-l-4 border-yellow-500 p-3 rounded">
-                        <Text className="text-black">
+                        <Text className={inputClass}>
                             🔁 <Text className="font-bold">{update.assigned_by_username}</Text> reassigned the task to{' '}
                             <Text className="font-bold">{update.assigned_to_username}</Text>{' '}
                         </Text>
-                        <Text className="text-black">
+                        <Text className={inputClass}>
                             🕓 Previous Assignee: <Text className="font-bold">{update.previous_assigned_to}</Text>
                         </Text>
                     </View>
@@ -401,26 +387,7 @@ const TaskUpdateCard: React.FC<Props> = ({ update }) => {
                     </View>
                 )}
 
-                {/* {update.file_path && (
-                    <View className="mt-2">
-                        <Text className="text-black font-medium mb-1">Attached File:</Text>
-                        {update.file_path.match(/\.(jpg|jpeg|png)$/i) ? (
-                            <Image
-                                source={{ uri: `${BASE_URL}/${update.file_path}` }}
-                                className="w-full h-40 rounded"
-                                resizeMode="cover"
-                            />
-                        ) : (
-                            <TouchableOpacity onPress={() => openLink(`${BASE_URL}/${update.file_path}`)}>
-                                <Text className="text-yellow-500">
-                                    {getFileEmoji(getFileExtension(update.file_path))}{' '}
-                                    {update.file_path.split('/').pop()}
-                                </Text>
-                            </TouchableOpacity>
-                        )}
-                    </View>
-                    
-                )} */}
+
                 {update.file_path && (
                     <View className="mt-2">
                         <Text className="text-black font-medium mb-1">Attached File:</Text>

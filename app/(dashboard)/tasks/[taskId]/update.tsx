@@ -1764,10 +1764,10 @@ export default function UpdateTaskScreen() {
         };
     }, [sound]);
 
-    // useEffect(() => {
-    //     fetchTask();
-    //     fetchUsers();
-    // }, [taskId]);
+    useEffect(() => {
+        // fetchTask();
+        fetchUsers();
+    }, [taskId]);
 
     // useFocusEffect(
     //     useCallback(() => {
@@ -1828,6 +1828,7 @@ export default function UpdateTaskScreen() {
             const res = await axios.get(`${BASE_URL}/api/tasks/list`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
+            // console.log(res.data);
             setUsers(res.data);
         } catch (err) {
             Alert.alert('Error', 'Failed to load users');

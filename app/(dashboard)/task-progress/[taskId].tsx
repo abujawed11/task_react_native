@@ -1,6 +1,6 @@
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { CalendarIcon, FileText, UserIcon } from 'lucide-react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { ActivityIndicator, Alert, Button, Image, Linking, ScrollView, Text, TouchableOpacity, View, useColorScheme } from 'react-native';
 // import { getStatusIcon, getPriorityIcon, formatDate } from '@/utils/taskUtils';
 import TaskUpdateCard from '@/components/TaskUpdateCard';
@@ -165,14 +165,34 @@ const TaskProgress = () => {
     };
 
 
-    useEffect(() => {
+    // useEffect(() => {
 
-        if (taskId) {
-            fetchTaskProgress();
-        } else {
-            console.warn('No taskId found from route params!'); // ✅ Additional guard
-        }
-    }, [taskId]);
+    //     if (taskId) {
+    //         fetchTaskProgress();
+    //     } else {
+    //         console.warn('No taskId found from route params!'); // ✅ Additional guard
+    //     }
+    // }, [taskId]);
+
+    useFocusEffect(
+        useCallback(() => {
+            if (taskId) {
+                fetchTaskProgress();
+            } else {
+                console.warn('No taskId found from route params!');
+            }
+
+            // 👇 Cleanup function when screen loses focus
+            return () => {
+                if (sound) {
+                    sound.unloadAsync();
+                    setSound(null);
+                    setIsPlaying(false);
+                }
+            };
+        }, [taskId, sound])
+    );
+
 
 
     if (loading) {
@@ -209,27 +229,64 @@ const TaskProgress = () => {
 
                             <View className="flex-row items-center space-x-2">
                                 <UserIcon size={16} color="#3b82f6" />
-                                <Text style={{ color: colorScheme === 'dark' ? '#000' : '#000' }}>Created By: {task.created_by}</Text>
+                                <Text style={{ color: colorScheme === 'dark' ? '#000' : '#000' }}>Created By:{' '}
+                                    {/* {task.created_by} */}
+                                    <Text style={{
+                                        fontWeight: 'bold',
+                                        color: colorScheme === 'dark' ? '#000' : '#000'
+                                    }}>{task.created_by}</Text>
+                                </Text>
                             </View>
                             <View className="flex-row items-center space-x-2">
                                 <UserIcon size={16} color="#3b82f6" />
-                                <Text style={{ color: colorScheme === 'dark' ? '#000' : '#000' }}>Assigned To: {task.assigned_to}</Text>
+                                <Text style={{ color: colorScheme === 'dark' ? '#000' : '#000' }}>Assigned To:{' '}
+                                    {/* {task.assigned_to} */}
+                                    <Text style={{
+                                        fontWeight: 'bold',
+                                        color: colorScheme === 'dark' ? '#000' : '#000'
+                                    }}>{task.assigned_to}</Text>
+                                </Text>
                             </View>
                             <View className="flex-row items-center space-x-2">
                                 {getStatusIcon(task.status)}
-                                <Text style={{ color: colorScheme === 'dark' ? '#000' : '#000' }}>Status: {task.status}</Text>
+                                <Text style={{ color: colorScheme === 'dark' ? '#000' : '#000' }}>Status:{' '}
+                                    {/* {task.status} */}
+                                    <Text style={{
+                                        fontWeight: 'bold',
+                                        color: colorScheme === 'dark' ? '#000' : '#000'
+                                    }}>{task.status}</Text>
+                                </Text>
                             </View>
                             <View className="flex-row items-center space-x-2">
                                 {getPriorityIcon(task.priority)}
-                                <Text style={{ color: colorScheme === 'dark' ? '#000' : '#000' }}>Priority: {task.priority}</Text>
+                                <Text style={{ color: colorScheme === 'dark' ? '#000' : '#000' }}>Priority:{' '}
+                                    {/* {task.priority} */}
+                                    <Text style={{
+                                        fontWeight: 'bold',
+                                        color: colorScheme === 'dark' ? '#000' : '#000'
+                                    }}>{task.created_by}</Text>
+                                </Text>
+                                {/* </Text> */}
                             </View>
                             <View className="flex-row items-center space-x-2">
                                 <CalendarIcon size={16} color="#3b82f6" />
-                                <Text style={{ color: colorScheme === 'dark' ? '#000' : '#000' }}>Due: {formatDate(task.due_date)}</Text>
+                                <Text style={{ color: colorScheme === 'dark' ? '#000' : '#000' }}>Due:{' '}
+                                    {/* {formatDate(task.due_date)} */}
+                                    <Text style={{
+                                        fontWeight: 'bold',
+                                        color: colorScheme === 'dark' ? '#000' : '#000'
+                                    }}>{task.created_by}</Text>
+                                </Text>
                             </View>
                             <View className="flex-row items-center space-x-2">
                                 <CalendarIcon size={16} color="#3b82f6" />
-                                <Text style={{ color: colorScheme === 'dark' ? '#000' : '#000' }}>Created: {formatDate(task.created_at)}</Text>
+                                <Text style={{ color: colorScheme === 'dark' ? '#000' : '#000' }}>Created:{' '}
+                                    {/* {formatDate(task.created_at)} */}
+                                    <Text style={{
+                                        fontWeight: 'bold',
+                                        color: colorScheme === 'dark' ? '#000' : '#000'
+                                    }}>{task.created_by}</Text>
+                                </Text>
                             </View>
 
                             {task.audio_path && (
