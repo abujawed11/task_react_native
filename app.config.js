@@ -49,7 +49,7 @@ export default ({ config }) => {
       [
         "expo-splash-screen",
         {
-          image: "./assets/images/splash.png",
+          image: "./assets/images/app_icon.png",
           resizeMode: "cover",
           backgroundColor: "#ffffff",
         },
