@@ -6,7 +6,7 @@ export default ({ config }) => {
     orientation: "portrait",
     icon: "./assets/images/app_icon.png",
     scheme: "taskreactnative",
-    userInterfaceStyle: "automatic",
+    userInterfaceStyle: "light",
     newArchEnabled: false,
 
     splash: {
